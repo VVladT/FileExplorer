@@ -5,5 +5,4 @@ public enum ElementType {
     Drive,
     Folder,
     File,
-    Shortcut
 }

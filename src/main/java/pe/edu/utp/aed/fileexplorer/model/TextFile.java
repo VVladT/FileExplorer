@@ -6,8 +6,19 @@ import javax.swing.*;
 import java.time.LocalDateTime;
 
 public class TextFile extends Element {
+    private StringBuilder content; //size = content.toString().lenght
+
     public TextFile(String name, LocalDateTime creationDate) {
         super(name, ElementType.File, creationDate);
+    }
+
+    public TextFile(String name, LocalDateTime createdDateTime, LocalDateTime lastModifiedDateTime, long size, String content) {
+        super(name, ElementType.File, createdDateTime, lastModifiedDateTime, size);
+        this.content = new StringBuilder(content);
+    }
+
+    public StringBuilder getContent() {
+        return content;
     }
 
     @Override

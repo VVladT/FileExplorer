@@ -45,6 +45,7 @@ public class IconView extends ElementView {
     private void removeAllElements() {
         for (Component component : getContentPanel().getComponents()) {
             if (component instanceof ElementCard ec) {
+                ec.clear();
                 remove(ec);
             }
         }
@@ -75,7 +76,7 @@ public class IconView extends ElementView {
         for (Component component : getComponents()) {
             if (component instanceof IconElementCard iec) {
                 if (iec.getElement().equals(element)) {
-                    element.removeObserver(iec);
+                    iec.clear();
                     remove(component);
                     adjustGridLayoutOnRemove();
                     revalidateAndRepaint();
@@ -132,18 +133,18 @@ public class IconView extends ElementView {
 
     public static void main(String[] args) {
         //RootDirectory directory = RootDirectory.getInstance();
-        Directory directory = new Folder("oal", LocalDateTime.now());
+        Directory directory = new FileFolder("oal", LocalDateTime.now());
 
-        Folder folder1 = new Folder("folder1", LocalDateTime.now());
-        Folder folder2 = new Folder("folder2", LocalDateTime.now());
-        Folder folder3 = new Folder("folder3", LocalDateTime.now());
-        Folder folder4 = new Folder("folder4", LocalDateTime.now());
-        Folder folder5 = new Folder("folder5", LocalDateTime.now());
-        Folder folder6 = new Folder("folder6", LocalDateTime.now());
-        Folder folder7 = new Folder("folder7", LocalDateTime.now());
-        Folder folder8 = new Folder("folder8", LocalDateTime.now());
-        Folder folder9 = new Folder("folder9", LocalDateTime.now());
-        Folder folder10 = new Folder("folder10", LocalDateTime.now());
+        FileFolder folder1 = new FileFolder("folder1", LocalDateTime.now());
+        FileFolder folder2 = new FileFolder("folder2", LocalDateTime.now());
+        FileFolder folder3 = new FileFolder("folder3", LocalDateTime.now());
+        FileFolder folder4 = new FileFolder("folder4", LocalDateTime.now());
+        FileFolder folder5 = new FileFolder("folder5", LocalDateTime.now());
+        FileFolder folder6 = new FileFolder("folder6", LocalDateTime.now());
+        FileFolder folder7 = new FileFolder("folder7", LocalDateTime.now());
+        FileFolder folder8 = new FileFolder("folder8", LocalDateTime.now());
+        FileFolder folder9 = new FileFolder("folder9", LocalDateTime.now());
+        FileFolder folder10 = new FileFolder("folder10", LocalDateTime.now());
 
         directory.addChild(folder1);
         directory.addChild(folder2);

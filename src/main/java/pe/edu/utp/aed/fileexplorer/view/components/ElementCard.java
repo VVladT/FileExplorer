@@ -62,4 +62,8 @@ public abstract class ElementCard extends JPanel implements ElementObserver {
     public boolean isSelected() {
         return selected;
     }
+
+    public void clear() {
+        element.removeObserver(this);
+    }
 }

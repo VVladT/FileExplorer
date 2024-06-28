@@ -3,7 +3,7 @@ package pe.edu.utp.aed.fileexplorer.view;
 import pe.edu.utp.aed.fileexplorer.controller.ElementController;
 import pe.edu.utp.aed.fileexplorer.model.Directory;
 import pe.edu.utp.aed.fileexplorer.model.TextFile;
-import pe.edu.utp.aed.fileexplorer.model.Folder;
+import pe.edu.utp.aed.fileexplorer.model.FileFolder;
 import pe.edu.utp.aed.fileexplorer.model.Element;
 import pe.edu.utp.aed.fileexplorer.view.components.DetailsElementCard;
 import pe.edu.utp.aed.fileexplorer.view.components.ElementCard;
@@ -135,7 +135,7 @@ public class DetailsView extends ElementView {
         for (Component component : contentPanel.getComponents()) {
             if (component instanceof DetailsElementCard dec) {
                 if (dec.getElement().equals(element)) {
-                    element.removeObserver(dec);
+                    dec.clear();
                     contentPanel.remove(dec);
                     revalidate();
                     repaint();
@@ -201,17 +201,17 @@ public class DetailsView extends ElementView {
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        Directory directory = new Folder("oal", LocalDateTime.now());
-        Folder folder1 = new Folder("folder1", LocalDateTime.now());
-        Folder folder2 = new Folder("folder2", LocalDateTime.now());
-        Folder folder3 = new Folder("folder3", LocalDateTime.now());
-        Folder folder4 = new Folder("folder4", LocalDateTime.now());
-        Folder folder5 = new Folder("folder5", LocalDateTime.now());
-        Folder folder6 = new Folder("folder6", LocalDateTime.now());
-        Folder folder7 = new Folder("folder7", LocalDateTime.now());
-        Folder folder8 = new Folder("folder8", LocalDateTime.now());
-        Folder folder9 = new Folder("folder9", LocalDateTime.now());
-        Folder folder10 = new Folder("folder10", LocalDateTime.now());
+        Directory directory = new FileFolder("oal", LocalDateTime.now());
+        FileFolder folder1 = new FileFolder("folder1", LocalDateTime.now());
+        FileFolder folder2 = new FileFolder("folder2", LocalDateTime.now());
+        FileFolder folder3 = new FileFolder("folder3", LocalDateTime.now());
+        FileFolder folder4 = new FileFolder("folder4", LocalDateTime.now());
+        FileFolder folder5 = new FileFolder("folder5", LocalDateTime.now());
+        FileFolder folder6 = new FileFolder("folder6", LocalDateTime.now());
+        FileFolder folder7 = new FileFolder("folder7", LocalDateTime.now());
+        FileFolder folder8 = new FileFolder("folder8", LocalDateTime.now());
+        FileFolder folder9 = new FileFolder("folder9", LocalDateTime.now());
+        FileFolder folder10 = new FileFolder("folder10", LocalDateTime.now());
 
         directory.addChild(folder1);
         directory.addChild(folder2);

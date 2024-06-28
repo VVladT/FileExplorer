@@ -27,6 +27,15 @@ public abstract class Element {
         this.observers = new ArrayList<>();
     }
 
+    public Element(String name, ElementType type, LocalDateTime creationDate, LocalDateTime modificationDate, long size) {
+        this.name = name;
+        this.type = type;
+        this.creationDate = creationDate;
+        this.modificationDate = modificationDate;
+        this.size = size;
+        this.observers = new ArrayList<>();
+    }
+
     public String getPath() {
         StringBuilder path = new StringBuilder();
 

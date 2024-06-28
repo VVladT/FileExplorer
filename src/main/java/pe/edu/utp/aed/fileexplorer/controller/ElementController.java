@@ -55,10 +55,12 @@ public class ElementController {
 
     public void deleteElement() {
         try {
-            if (selectedElement.isDirectory()) {
-                if (nav.contains((Directory) selectedElement)) nav.clear();
+            if (selectedElement != null) {
+                if (selectedElement.isDirectory()) {
+                    if (nav.contains((Directory) selectedElement)) nav.clear();
+                }
+                currentDirectory.removeChild(selectedElement);
             }
-            currentDirectory.removeChild(selectedElement);
         } catch (IllegalArgumentException e) {
 
         }
@@ -129,7 +131,7 @@ public class ElementController {
     }
 
     public void createNewFolder() {
-        Folder newFolder = FileSystemEditor.createNewFolder();
+        FileFolder newFolder = FileSystemEditor.createNewFolder();
         vfs.addElement(currentDirectory, newFolder);
     }
 

@@ -1,0 +1,135 @@
+package pe.edu.utp.aed.fileexplorer.util;
+
+import pe.edu.utp.aed.fileexplorer.model.*;
+import xyz.cupscoffee.files.api.Disk;
+import xyz.cupscoffee.files.api.File;
+import xyz.cupscoffee.files.api.Folder;
+import xyz.cupscoffee.files.api.SavStructure;
+import xyz.cupscoffee.files.api.implementation.SimpleDisk;
+import xyz.cupscoffee.files.api.implementation.SimpleFile;
+import xyz.cupscoffee.files.api.implementation.SimpleFolder;
+import xyz.cupscoffee.files.api.implementation.VFSSavStructure;
+
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class SavFileManager {
+    public SavStructure parseSystemToSavStructure(VirtualFileSystem vfs) {
+        Disk[] disks = new SimpleDisk[vfs.getDrives().size()];
+        List<Element> drives = vfs.getDrives();
+        for (int i = 0; i < drives.size(); i++) {
+            VirtualDrive vDrive = (VirtualDrive) drives.get(i);
+            disks[i] = parseDisk(vDrive);
+        }
+        Map<String,String> quickAccessMetadata = parseQuickAccess(vfs.getQuickAccess());
+
+        return new VFSSavStructure("VFileSystem", disks, quickAccessMetadata);
+    }
+
+    private Disk parseDisk(VirtualDrive drive) {
+        Folder root = parseFolder(drive);
+        return new SimpleDisk(drive.getName(), root, drive.getTotalSpace(), null);
+    }
+
+    private Folder parseFolder(Directory fileFolder) {
+        List<File> files = new ArrayList<>();
+        List<Folder> folders = new ArrayList<>();
+        if (!fileFolder.isEmpty()) {
+            separateFoldersAndFiles(fileFolder, files, folders);
+        }
+
+        return new SimpleFolder(fileFolder.getName(), files,folders, fileFolder.getCreationDate(),
+                fileFolder.getModificationDate(), Path.of(fileFolder.getPath()), null);
+    }
+
+    private File parseFile(TextFile textFile) {
+        String str = textFile.getContent().toString();
+        ByteBuffer buffer = ByteBuffer.wrap(str.getBytes(Charset.forName("UTF-8")));
+
+        return new SimpleFile(textFile.getName(),buffer,textFile.getCreationDate(),
+                textFile.getModificationDate(), Path.of(textFile.getPath()),null);
+    }
+
+    private void separateFoldersAndFiles(Directory directory, List<File> files, List<Folder> folders) {
+        for (Element child : directory.getChildren()) {
+            if (child.isDirectory()) {
+                folders.add(parseFolder((Directory) child));
+            } else {
+                files.add(parseFile((TextFile) child));
+            }
+        }
+    }
+
+    private Map<String, String> parseQuickAccess(QuickAccess quickAccess) {
+        Map<String, String> metadata = new HashMap<>(1);
+        StringBuilder sb = new StringBuilder();
+
+        List<Element> elements = quickAccess.getElements();
+        for (int i = 0, elementsSize = elements.size(); i < elementsSize; i++) {
+            Element element = elements.get(i);
+            sb.append(element.getPath());
+            if (i < elementsSize - 1) {
+                sb.append(",");
+            }
+        }
+
+        metadata.put("quickAccess", sb.toString());
+
+        return metadata;
+    }
+
+    public VirtualFileSystem parseSavStructureToSystem(SavStructure savStructure) {
+        List<VirtualDrive> drives = new ArrayList<>();
+        for (Disk disk : savStructure.getDisks()) {
+            VirtualDrive vDrive = parseDiskToDrive(disk);
+            drives.add(vDrive);
+        }
+        QuickAccess quickAccess = parseQuickAccess(savStructure.getMetadata());
+
+        return new VirtualFileSystem(drives, quickAccess);
+    }
+
+    private VirtualDrive parseDiskToDrive(Disk disk) {
+        Directory root = parseFolderToDirectory(disk.getRootFolder());
+        return new VirtualDrive(root.getName(), root.getCreationDate(), root.getModificationDate(),
+                root.getSize(), disk.getLimitSize(), root.getChildren());
+    }
+
+    private Directory parseFolderToDirectory(Folder folder) {
+        List<Element> children = new ArrayList<>();
+        for (Folder subFolder : folder.getFolders()) {
+            children.add(parseFolderToDirectory(subFolder));
+        }
+        for (File file : folder.getFiles()) {
+            children.add(parseFileToTextFile(file));
+        }
+        return new FileFolder(folder.getName(), folder.getCreatedDateTime(), folder.getLastModifiedDateTime(),
+                folder.getSize(), children);
+    }
+
+    private TextFile parseFileToTextFile(File file) {
+        ByteBuffer buffer = file.getContent();
+        byte[] contentBytes = new byte[buffer.remaining()];
+        buffer.get(contentBytes);
+        String content = new String(contentBytes, Charset.forName("UTF-8"));
+
+        return new TextFile(file.getName(), file.getCreatedDateTime(), file.getLastModifiedDateTime(),
+                file.getSize(), content);
+    }
+
+    private QuickAccess parseQuickAccess(Map<String, String> quickAccessMetadata) {
+        List<Element> elements = new ArrayList<>();
+
+        String paths = quickAccessMetadata.get("quickAccess");
+        for (String path : paths.split(",")) {
+            elements.add(VirtualFileSystem.getElementByPath(RootDirectory.getInstance(), path));
+        }
+
+        return new QuickAccess(elements);
+    }
+}

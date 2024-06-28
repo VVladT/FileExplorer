@@ -28,7 +28,7 @@ public class ProbandoWeas extends JFrame {
 
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
-        panel.add(new DetailsElementCard(new Folder("Prueba", LocalDateTime.now())));
+        panel.add(new DetailsElementCard(new FileFolder("Prueba", LocalDateTime.now())));
         // View for icons and details using JList
         fileListView = new JList<>(listModel);
         fileListView.setLayoutOrientation(JList.HORIZONTAL_WRAP);
@@ -108,8 +108,8 @@ public class ProbandoWeas extends JFrame {
         SwingUtilities.invokeLater(() -> {
             List<Element> elements = new ArrayList<>();
             elements.add(new TextFile("Ola", LocalDateTime.now()));
-            elements.add(new Folder("Folder", LocalDateTime.now()));
-            Folder folder = new Folder("Folder2", LocalDateTime.now());
+            elements.add(new FileFolder("Folder", LocalDateTime.now()));
+            FileFolder folder = new FileFolder("Folder2", LocalDateTime.now());
             folder.addChild(new TextFile("File", LocalDateTime.now()));
             elements.add(folder);
             elements.add(new VirtualDrive("Drive", LocalDateTime.now(), 20));

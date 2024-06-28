@@ -185,8 +185,8 @@ public class QuickAccessPanel extends JPanel {
             frame.setSize(600, 400);
             frame.setVisible(true);
             quickAccess.addElement(file2);
-            Folder folder1 = new Folder("Folder 1", LocalDateTime.now());
-            Folder folder2 = new Folder("Folder 2", LocalDateTime.now());
+            FileFolder folder1 = new FileFolder("Folder 1", LocalDateTime.now());
+            FileFolder folder2 = new FileFolder("Folder 2", LocalDateTime.now());
             rootDirectory.addChild(folder1);
             folder1.addChild(folder2);
             quickAccess.addElement(folder2);

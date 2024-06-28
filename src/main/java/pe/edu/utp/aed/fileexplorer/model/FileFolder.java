@@ -4,15 +4,20 @@ import pe.edu.utp.aed.fileexplorer.util.IconAdapter;
 
 import javax.swing.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
-public class Folder extends Directory {
-    public Folder(String name, LocalDateTime creationDate) {
+public class FileFolder extends Directory {
+    public FileFolder(String name, LocalDateTime creationDate) {
         super(name, ElementType.Folder, creationDate);
+    }
+
+    public FileFolder(String name, LocalDateTime createdDateTime, LocalDateTime lastModifiedDateTime, long size, List<Element> children) {
+        super(name, ElementType.Folder, createdDateTime, lastModifiedDateTime, size, children);
     }
 
     @Override
     public ImageIcon getIcon() {
-        if (getChildren().isEmpty()) {
+        if (isEmpty()) {
             return IconAdapter.EMPTY_FOLDER_ICON;
         } else {
             return IconAdapter.FULLY_FOLDER_ICON;
@@ -21,7 +26,7 @@ public class Folder extends Directory {
 
     @Override
     public Element clone() {
-        Folder clone = new Folder(getName(), getCreationDate());
+        FileFolder clone = new FileFolder(getName(), getCreationDate());
         clone.setModificationDate(getModificationDate());
         clone.setSize(getSize());
         for (Element child : getChildren()) {

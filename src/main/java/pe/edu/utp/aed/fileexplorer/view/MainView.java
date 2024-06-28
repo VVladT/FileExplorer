@@ -97,4 +97,10 @@ public class MainView extends JFrame {
         panel.revalidate();
         panel.repaint();
     }
+
+    public void clearObservers() {
+        for (ElementCard element : getElements()) {
+            element.clear();
+        }
+    }
 }
