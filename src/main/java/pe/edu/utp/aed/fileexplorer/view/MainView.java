@@ -2,6 +2,7 @@ package pe.edu.utp.aed.fileexplorer.view;
 
 import pe.edu.utp.aed.fileexplorer.controller.ElementController;
 import pe.edu.utp.aed.fileexplorer.model.Directory;
+import pe.edu.utp.aed.fileexplorer.model.Element;
 import pe.edu.utp.aed.fileexplorer.model.RootDirectory;
 import pe.edu.utp.aed.fileexplorer.view.components.ElementCard;
 import pe.edu.utp.aed.fileexplorer.view.events.ToolBar;
@@ -13,7 +14,8 @@ import java.util.List;
 public class MainView extends JFrame {
     private ElementController controller;
     private Directory currentDirectory;
-    private JPanel panel;
+    private JPanel mainPanel;
+    private QuickAccessPanel lateralPanel;
     private ToolBar toolBar;
     private ElementView elementView;
 
@@ -36,22 +38,22 @@ public class MainView extends JFrame {
         setSize(calculateSize());
         setLocationRelativeTo(null);
         setResizable(false);
-        setVisible(true);
     }
 
     private void initializeController() {
         controller.setCurrentDirectory(currentDirectory);
-        controller.setMainView(this);
     }
 
     private void initializeComponents() {
-        panel = new JPanel(new BorderLayout());
+        mainPanel = new JPanel(new BorderLayout());
         toolBar = new ToolBar(controller);
         elementView = new DetailsView(currentDirectory, controller, getLayeredPane());
+        lateralPanel = new QuickAccessPanel(controller);
     }
 
     private void arrangeComponents() {
-        add(panel);
+        add(new JScrollPane(lateralPanel), BorderLayout.WEST);
+        add(mainPanel);
         setJMenuBar(toolBar);
         add(createUpperPanel(), BorderLayout.NORTH);
         refreshView();
@@ -67,6 +69,7 @@ public class MainView extends JFrame {
     public void setCurrentDirectory(Directory newDirectory) {
         setTitle("Explorador de archivos - " + newDirectory.getName());
         currentDirectory = newDirectory;
+        toolBar.getAddressBar().setText(currentDirectory.getPath());
         updateDirectoryView();
     }
 
@@ -82,10 +85,10 @@ public class MainView extends JFrame {
 
     private void refreshView() {
         clearObservers();
-        panel.removeAll();
-        panel.add(new JScrollPane(elementView), BorderLayout.CENTER);
-        panel.revalidate();
-        panel.repaint();
+        mainPanel.removeAll();
+        mainPanel.add(new JScrollPane(elementView), BorderLayout.CENTER);
+        mainPanel.revalidate();
+        mainPanel.repaint();
     }
 
     private Dimension calculateSize() {
@@ -127,5 +130,13 @@ public class MainView extends JFrame {
         for (ElementCard element : getElements()) {
             element.clear();
         }
+    }
+
+    public ElementCard getElementCard(Element element) {
+        return elementView.getElementCard(element);
+    }
+
+    public void start() {
+        setVisible(true);
     }
 }

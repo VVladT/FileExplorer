@@ -9,6 +9,7 @@ import java.awt.*;
 public abstract class ElementCard extends JPanel implements ElementObserver {
     protected Element element;
     private boolean selected = false;
+    protected boolean isCut = false;
 
     public ElementCard(Element element) {
         this.element = element;
@@ -57,6 +58,11 @@ public abstract class ElementCard extends JPanel implements ElementObserver {
         selected = false;
         setBackground(null);
         setBorder(null);
+    }
+
+    public void cut() {
+        isCut = true;
+        refresh();
     }
 
     public boolean isSelected() {

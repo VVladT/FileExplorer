@@ -5,15 +5,15 @@ import pe.edu.utp.aed.fileexplorer.model.*;
 import pe.edu.utp.aed.fileexplorer.util.FileSize;
 import pe.edu.utp.aed.fileexplorer.util.SavFileManager;
 import pe.edu.utp.aed.fileexplorer.util.SavGenerator;
-import pe.edu.utp.aed.fileexplorer.view.IconView;
 import pe.edu.utp.aed.fileexplorer.view.MainView;
 import pe.edu.utp.aed.fileexplorer.view.events.KeyboardHandler;
 import xyz.cupscoffee.files.api.SavStructure;
 
 import java.time.LocalDateTime;
 
-public class TestTree {
+public class Testeo {
     public static void main(String[] args) {
+        VirtualFileSystem vfs = new VirtualFileSystem();
         RootDirectory root = RootDirectory.getInstance();
         VirtualDrive mainDrive = new VirtualDrive("Disco", LocalDateTime.now(), FileSize.TB);
 
@@ -21,12 +21,12 @@ public class TestTree {
 
         Directory mainFolder = new FileFolder("Main Folder", LocalDateTime.now());
 
-        FileFolder folder1 = new FileFolder("Folder 01", LocalDateTime.now());
+        FileFolder folder1 = new FileFolder("Folder 01", LocalDateTime.of(2000,3,12, 4,0));
         FileFolder folder2 = new FileFolder("Folder 02", LocalDateTime.now());
         FileFolder folder3 = new FileFolder("Folder 03", LocalDateTime.now());
         FileFolder folder4 = new FileFolder("Folder 04", LocalDateTime.now());
         FileFolder folder5 = new FileFolder("Folder 05", LocalDateTime.now());
-        FileFolder folder6 = new FileFolder("Folder 06", LocalDateTime.now());
+        FileFolder folder6 = new FileFolder("Folder 06", LocalDateTime.of(2000,3,12, 4,0));
         FileFolder folder7 = new FileFolder("Folder 07", LocalDateTime.now());
         FileFolder folder8 = new FileFolder("Folder 08", LocalDateTime.now());
         FileFolder folder9 = new FileFolder("Folder 09", LocalDateTime.now());
@@ -42,15 +42,18 @@ public class TestTree {
         mainFolder.addChild(folder8);
         mainFolder.addChild(folder9);
         mainFolder.addChild(folder10);
-        mainFolder.removeChild(folder1);
 
         TextFile file = new TextFile("Texto", LocalDateTime.now());
         file.getContent().append("Hola amigos de youtube\n\n\nEn este video ...");
+        file.updateSize();
 
         mainFolder.addChild(file);
 
         mainDrive.addChild(mainFolder);
-        ElementController elementController = new ElementController();
+
+        ElementController elementController = new ElementController(vfs);
+
+        elementController.startApplication();
 
         elementController.addElementToQuickAccess(folder6);
         elementController.addElementToQuickAccess(folder8);

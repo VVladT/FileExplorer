@@ -20,7 +20,6 @@ public class MouseHandler extends MouseAdapter {
     private JPopupMenu viewPopupMenu;
     private JPopupMenu rootPopupMenu;
     private boolean dragging = false;
-    private Point initialClick;
 
     public MouseHandler(JLayeredPane layeredPane, ElementController elementController) {
         this.layeredPane = layeredPane;
@@ -45,7 +44,8 @@ public class MouseHandler extends MouseAdapter {
                 elementController.setSelectedElement(null);
                 viewPopupMenu.show(e.getComponent(), e.getX(), e.getY());
             } else {
-
+                elementController.setSelectedElement(null);
+                rootPopupMenu.show(e.getComponent(), e.getX(), e.getY());
             }
         }
     }
@@ -107,7 +107,6 @@ public class MouseHandler extends MouseAdapter {
             selectedElement = ec;
             selectedElement.click();
             elementController.setSelectedElement(selectedElement.getElement());
-            initialClick = e.getPoint();
         } else {
             resetSelection();
         }
@@ -193,7 +192,6 @@ public class MouseHandler extends MouseAdapter {
 
     private void resetHandlerState() {
         selectedElement = null;
-        initialClick = null;
         dragging = false;
         transferElement = null;
     }

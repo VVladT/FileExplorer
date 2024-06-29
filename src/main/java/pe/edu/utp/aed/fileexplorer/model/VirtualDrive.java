@@ -1,5 +1,6 @@
 package pe.edu.utp.aed.fileexplorer.model;
 
+import pe.edu.utp.aed.fileexplorer.exceptions.NotEnoughSpaceException;
 import pe.edu.utp.aed.fileexplorer.util.FileSize;
 import pe.edu.utp.aed.fileexplorer.util.IconAdapter;
 
@@ -40,7 +41,7 @@ public class VirtualDrive extends Directory {
 
     public void addUsedSpace(long space) {
         if (getSize() + space > totalSpace) {
-            throw new IllegalArgumentException("Not enough space in the disk.");
+            throw new NotEnoughSpaceException(this);
         }
         setSize(getSize() + space);
     }

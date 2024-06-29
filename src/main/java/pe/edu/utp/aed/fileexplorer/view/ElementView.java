@@ -18,6 +18,7 @@ public abstract class ElementView extends JPanel implements DirectoryObserver {
     public ElementView(Directory directory, ElementController controller) {
         this.directory = directory;
         this.controller = controller;
+        setPreferredSize(new Dimension(600, 400));
     }
 
     public void updateDirectory(Directory newDirectory) {
@@ -36,7 +37,7 @@ public abstract class ElementView extends JPanel implements DirectoryObserver {
     public List<ElementCard> getAllElements() {
         List<ElementCard> allElements = new ArrayList<>();
 
-        for (Component component : getComponents()) {
+        for (Component component : getContentPanel().getComponents()) {
             if (component instanceof ElementCard ec) {
                 allElements.add(ec);
             }
@@ -48,7 +49,7 @@ public abstract class ElementView extends JPanel implements DirectoryObserver {
     public List<ElementCard> getDirectories() {
         List<ElementCard> directories = new ArrayList<>();
 
-        for (Component component : getComponents()) {
+        for (Component component : getContentPanel().getComponents()) {
             if (component instanceof ElementCard ec) {
                 if (ec.getElement().isDirectory()) {
                     directories.add(ec);
@@ -61,5 +62,16 @@ public abstract class ElementView extends JPanel implements DirectoryObserver {
 
     public JPanel getContentPanel() {
         return this;
+    }
+
+    public ElementCard getElementCard(Element element) {
+        for (Component component : getContentPanel().getComponents()) {
+            if (component instanceof ElementCard ec) {
+                if (ec.getElement().equals(element)) {
+                    return ec;
+                }
+            }
+        }
+        return null;
     }
 }

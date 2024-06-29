@@ -1,5 +1,6 @@
 package pe.edu.utp.aed.fileexplorer.controller;
 
+import pe.edu.utp.aed.fileexplorer.exceptions.NotEnoughSpaceException;
 import pe.edu.utp.aed.fileexplorer.model.*;
 import pe.edu.utp.aed.fileexplorer.util.FileExporter;
 import pe.edu.utp.aed.fileexplorer.util.FileSystemEditor;
@@ -20,20 +21,22 @@ public class ElementController {
     private final VirtualFileSystem vfs;
     private Directory currentDirectory;
     private Element selectedElement;
-    private MainView mainView;
+    private final MainView mainView;
 
-    public ElementController() {
+    public ElementController(VirtualFileSystem vfs) {
         buffer = new ElementBuffer();
         nav = new DirectoryNavigator();
-        vfs = new VirtualFileSystem();
+        this.vfs = vfs;
+        mainView = new MainView(this);
     }
 
+    public void startApplication() {
+        mainView.setVisible(true);
+    }
+
+    // Accessor Methods
     public VirtualFileSystem getVirtualFileSystem() {
         return vfs;
-    }
-
-    public void addElementToQuickAccess(Element element) {
-        vfs.addElementToQuickAccess(element);
     }
 
     public Directory getCurrentDirectory() {
@@ -42,9 +45,7 @@ public class ElementController {
 
     public void setCurrentDirectory(Directory currentDirectory) {
         this.currentDirectory = currentDirectory;
-        if (mainView != null) {
-            mainView.refreshToolbar();
-        }
+        refreshToolbar();
     }
 
     public Element getSelectedElement() {
@@ -53,128 +54,13 @@ public class ElementController {
 
     public void setSelectedElement(Element selectedElement) {
         this.selectedElement = selectedElement;
-        if (mainView != null) {
-            mainView.refreshToolbar();
-        }
+        refreshToolbar();
     }
 
-    public void setMainView(MainView mainView) {
-        this.mainView = mainView;
-    }
-
+    // File System Operations
     public void createNewDrive() {
         VirtualDrive newDrive = FileSystemEditor.createNewDrive();
         vfs.addDrive(newDrive);
-    }
-
-    public void deleteElement() {
-        try {
-            if (selectedElement != null) {
-                if (selectedElement.isDirectory()) {
-                    if (nav.contains((Directory) selectedElement)) nav.clear();
-                }
-                currentDirectory.removeChild(selectedElement);
-            }
-        } catch (IllegalArgumentException e) {
-
-        }
-        resetSelectedElement();
-        mainView.refreshToolbar();
-    }
-
-    public void copyElement() {
-        buffer.copyElement(selectedElement);
-        mainView.refreshToolbar();
-    }
-
-    public void cutElement() {
-        if (selectedElement.isDirectory()) {
-            if (nav.contains((Directory) selectedElement)) nav.clear();
-        }
-        buffer.cutElement(currentDirectory, selectedElement);
-
-        mainView.refreshToolbar();
-    }
-
-    public void moveElement(Directory target) {
-        if (selectedElement.isDirectory()) {
-            if (nav.contains((Directory) selectedElement)) nav.clear();
-        }
-        vfs.deleteElement(currentDirectory, selectedElement);
-        vfs.addElement(target, selectedElement);
-        resetSelectedElement();
-        mainView.refreshToolbar();
-    }
-
-    public void pasteElement() {
-        if (!buffer.isEmpty()) {
-            Element element = null;
-            element = buffer.recoveryElement();
-            vfs.pasteElement(currentDirectory, element);
-        }
-        resetSelectedElement();
-        mainView.refreshToolbar();
-        refreshLayeredPane();
-    }
-
-    public List<ElementCard> getDirectoriesCard() {
-        return mainView.getDirectories();
-    }
-
-    public void refreshLayeredPane() {
-        mainView.getLayeredPane().revalidate();
-        mainView.getLayeredPane().repaint();
-    }
-
-    public boolean bufferIsEmpty() {
-        return buffer.isEmpty();
-    }
-
-    public void saveFile() {
-
-    }
-
-    public void loadFile() {
-
-    }
-
-    public void exportFile() {
-        exportFile(selectedElement);
-    }
-
-    private void exportFile(Element element) {
-        if (element != null) {
-            if (element.isDirectory()) {
-                exportDirectory((Directory) element);
-            } else {
-                if (element instanceof TextFile) {
-                    exportTextFile((TextFile) element);
-                } else {
-
-                }
-            }
-        }
-    }
-
-    private void exportDirectory(Directory directory) {
-        if (directory instanceof FileFolder) {
-            FileExporter fileExporter = new FileExporter();
-            fileExporter.exportFolder((FileFolder) directory);
-        } else {
-        }
-    }
-
-    private void exportTextFile(TextFile textFile) {
-        TextExporter exporterText = new TextExporter();
-        exporterText.exportTextFile(textFile);
-    }
-
-    public void pinElementToQuickAccess() {
-    }
-
-    public void renameElement() {
-        String newName = FileSystemEditor.renameElement(selectedElement);
-        vfs.renameElement(currentDirectory, selectedElement, newName);
     }
 
     public void createNewFolder() {
@@ -187,57 +73,69 @@ public class ElementController {
         vfs.addElement(currentDirectory, newFile);
     }
 
-    public void switchIconView() {
-        mainView.setIconView();
+    public void deleteElement() {
+        if (selectedElement != null) {
+            handleDirectoryNavigation(selectedElement);
+            currentDirectory.removeChild(selectedElement);
+        }
+        resetSelectedElement();
     }
 
-    public void switchDetailsView() {
-        mainView.setDetailsView();
+    public void renameElement() {
+        String newName = FileSystemEditor.renameElement(selectedElement);
+        vfs.renameElement(currentDirectory, selectedElement, newName);
     }
 
-    public void refreshFocus() {
-        mainView.requestFocus();
+    public void pinElementToQuickAccess() {
+        if (selectedElement != null) {
+            vfs.addElementToQuickAccess(selectedElement);
+        }
+    }
+    // Buffer Operations
+
+    public void copyElement() {
+        buffer.copyElement(selectedElement);
+        refreshToolbar();
     }
 
-    public JPanel getContentPanel() {
-        return mainView.getContentPanel();
-    }
-
-    public void openElement() {
-        openElement(selectedElement);
-    }
-
-    public void openElement(Element element) {
-        if (element != null) {
-            if (element.isDirectory()) {
-                nav.addDirectoryToBack(currentDirectory);
-                mainView.setCurrentDirectory((Directory) element);
-                resetSelectedElement();
-            } else {
-                if (element instanceof TextFile) {
-                    openTextFileForEditing((TextFile) element);
-                } else {
-
-                }
-            }
+    public void cutElement() {
+        if (selectedElement != null && !(selectedElement instanceof VirtualDrive)
+                && selectedElement != RootDirectory.getInstance()) {
+            handleDirectoryNavigation(selectedElement);
+            ElementCard elementCard = mainView.getElementCard(selectedElement);
+            elementCard.cut();
+            buffer.cutElement(currentDirectory, selectedElement);
+            refreshToolbar();
         }
     }
 
-    private void openTextFileForEditing(TextFile textFile) {
-        TextEditor editor = new TextEditor();
-        editor.openFile(textFile);
+    public void pasteElement() {
+        if (!buffer.isEmpty()) {
+            Element element = buffer.peekElement();
+            if (element.isDirectory() && buffer.getCommand() == ElementBuffer.Command.CUT) {
+                Directory dir = (Directory) element;
+                if (dir.containsElement(currentDirectory)) {
+                    showErrorMessage("The cut directory contains current directory");
+                    return;
+                }
+            }
+
+            try {
+                element = buffer.recoveryElement();
+                vfs.pasteElement(currentDirectory, element);
+            } catch (NotEnoughSpaceException e) {
+                showErrorMessage(e.getMessage());
+            }
+        }
+        resetSelectedElement();
+        refreshLayeredPane();
     }
 
-    public void searchElements(String nameFile) {
-        List<Element> foundElements = vfs.search(nameFile);
-
+    public boolean bufferIsEmpty() {
+        return buffer.isEmpty();
     }
 
-    public void searchByPath(String path) {
-        Element element = vfs.getElementByPath(path);
-        openElement(element);
-    }
-
+    // Navigation Operations
     public boolean navHasBack() {
         return nav.hasBack();
     }
@@ -260,9 +158,79 @@ public class ElementController {
         }
     }
 
-    private void resetSelectedElement() {
-        selectedElement = null;
+    // Export Operations
+    public void exportFile() {
+        exportFile(selectedElement);
     }
+
+    private void exportFile(Element element) {
+        if (element != null) {
+            if (element.isDirectory()) {
+                exportDirectory((Directory) element);
+            } else if (element instanceof TextFile) {
+                exportTextFile((TextFile) element);
+            }
+        }
+    }
+
+    private void exportDirectory(Directory directory) {
+        if (directory instanceof FileFolder) {
+            FileExporter fileExporter = new FileExporter();
+            fileExporter.exportFolder((FileFolder) directory);
+        }
+    }
+
+    private void exportTextFile(TextFile textFile) {
+        TextExporter exporterText = new TextExporter();
+        exporterText.exportTextFile(textFile);
+    }
+
+    // Element Operations
+    public void moveElement(Directory target) {
+        handleDirectoryNavigation(selectedElement);
+        vfs.deleteElement(currentDirectory, selectedElement);
+        vfs.addElement(target, selectedElement);
+        resetSelectedElement();
+    }
+
+    public void openElement() {
+        openElement(selectedElement);
+    }
+
+    public void openElement(Element element) {
+        if (element != null) {
+            if (element.isDirectory()) {
+                nav.addDirectoryToBack(currentDirectory);
+                mainView.setCurrentDirectory((Directory) element);
+                resetSelectedElement();
+            } else if (element instanceof TextFile) {
+                openTextFileForEditing((TextFile) element);
+            }
+        }
+    }
+
+    private void openTextFileForEditing(TextFile textFile) {
+        TextEditor editor = new TextEditor();
+        editor.openFile(textFile);
+    }
+
+    // Quick Access Operations
+    public void addElementToQuickAccess(Element element) {
+        vfs.addElementToQuickAccess(element);
+    }
+
+    // Search Operations
+
+    public void searchElements(String nameFile) {
+        List<Element> foundElements = vfs.search(nameFile);
+        // Falta trabajar una vista que rermita visualizar los elementos
+    }
+    public void searchByPath(String path) {
+        Element element = vfs.getElementByPath(path);
+        openElement(element);
+    }
+
+    // Clipboard Operations
 
     public void copyPathToClipboard() {
         if (selectedElement != null) {
@@ -270,5 +238,59 @@ public class ElementController {
             Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
             clipboard.setContents(new StringSelection(path), null);
         }
+    }
+    // View Operations
+
+    public List<ElementCard> getDirectoriesCard() {
+        return mainView.getDirectories();
+    }
+    public void switchIconView() {
+        mainView.setIconView();
+    }
+
+    public void switchDetailsView() {
+        mainView.setDetailsView();
+    }
+
+    public void refreshFocus() {
+        mainView.requestFocus();
+    }
+
+    public JPanel getContentPanel() {
+        return mainView.getContentPanel();
+    }
+
+    public void refreshLayeredPane() {
+        mainView.getLayeredPane().revalidate();
+        mainView.getLayeredPane().repaint();
+    }
+
+    private void refreshToolbar() {
+        if (mainView != null) {
+            mainView.refreshToolbar();
+        }
+    }
+
+    private void resetSelectedElement() {
+        selectedElement = null;
+        refreshToolbar();
+    }
+
+    private void handleDirectoryNavigation(Element element) {
+        if (element.isDirectory() && nav.contains((Directory) element)) {
+            nav.clear();
+        }
+    }
+
+    public void saveFile() {
+
+    }
+
+    public void loadFile() {
+
+    }
+
+    private void showErrorMessage(String message) {
+        JOptionPane.showMessageDialog(mainView, message);
     }
 }

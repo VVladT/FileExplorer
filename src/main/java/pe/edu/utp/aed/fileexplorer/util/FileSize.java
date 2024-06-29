@@ -1,6 +1,7 @@
 package pe.edu.utp.aed.fileexplorer.util;
 
 import javax.swing.*;
+import java.text.DecimalFormat;
 
 public class FileSize {
     public static final long BYTES = 8;
@@ -42,5 +43,25 @@ public class FileSize {
         JComboBox<Unit> comboBox = new JComboBox<>(Unit.values());
         comboBox.setSelectedItem(Unit.GB);
         return comboBox;
+    }
+
+    public static String formatSize(long size) {
+        if (size < KB) {
+            return size + " " + Unit.BYTES;
+        } else if (size < MB) {
+            return format(size, KB, Unit.KB);
+        } else if (size < GB) {
+            return format(size, MB, Unit.MB);
+        } else if (size < TB) {
+            return format(size, GB, Unit.GB);
+        } else {
+            return format(size, TB, Unit.TB);
+        }
+    }
+
+    private static String format(long size, long unitSize, Unit unit) {
+        double result = (double) size / unitSize;
+        DecimalFormat formatter = new DecimalFormat("#.##");
+        return formatter.format(result) + " " + unit;
     }
 }

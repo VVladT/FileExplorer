@@ -3,6 +3,7 @@ package pe.edu.utp.aed.fileexplorer.model;
 import pe.edu.utp.aed.fileexplorer.exceptions.SameNameException;
 import pe.edu.utp.aed.fileexplorer.model.observers.DirectoryObserver;
 import pe.edu.utp.aed.fileexplorer.model.observers.ElementObserver;
+import pe.edu.utp.aed.fileexplorer.util.ElementSorter;
 import pe.edu.utp.aed.fileexplorer.util.datastructures.HashTable;
 
 import java.time.LocalDateTime;
@@ -70,7 +71,23 @@ public abstract class Directory extends Element implements ElementObserver {
     }
 
     public List<Element> getChildren() {
-        return children.getValues();
+        List<Element> children = this.children.getValues();
+
+        ElementSorter.sortByName(children);
+
+        return children;
+    }
+
+    public List<Directory> getDirectories() {
+        List<Directory> directories = new ArrayList<>();
+
+        for (Element child : getChildren()) {
+            if (child instanceof Directory dir) {
+                directories.add(dir);
+            }
+        }
+
+        return directories;
     }
 
     public List<Element> search(String name) {
@@ -85,6 +102,20 @@ public abstract class Directory extends Element implements ElementObserver {
 
     public boolean containsChild(String childName) {
         return children.containsKey(childName);
+    }
+
+    public boolean containsElement(Element element) {
+        if (children.containsKey(element.getName())) {
+            if (children.get(element.getName()) == element) {
+                return true;
+            }
+        }
+
+        for (Directory directory : getDirectories()) {
+            directory.containsElement(element);
+        }
+
+        return false;
     }
 
     private void search(Directory dir, String name, List<Element> list) {

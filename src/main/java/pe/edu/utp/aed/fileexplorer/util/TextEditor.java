@@ -5,6 +5,7 @@ import pe.edu.utp.aed.fileexplorer.model.TextFile;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -71,6 +72,7 @@ public class TextEditor {
 
         saveButton.addActionListener(e -> {
             textFile.getContent().replace(0, textFile.getContent().length(), textArea.getText());
+            textFile.updateSize();
             statusLabel.setText("No hay cambios pendientes");
             JOptionPane.showMessageDialog(frame, "El archivo se ha guardado correctamente.", "Guardado", JOptionPane.INFORMATION_MESSAGE);
         });
@@ -79,12 +81,15 @@ public class TextEditor {
 
         saveAndExitButton.addActionListener(e -> {
             textFile.getContent().replace(0, textFile.getContent().length(), textArea.getText());
+            textFile.updateSize();
             statusLabel.setText("No hay cambios pendientes");
             JOptionPane.showMessageDialog(frame, "El archivo se ha guardado correctamente.", "Guardado", JOptionPane.INFORMATION_MESSAGE);
             frame.dispose();
         });
 
-        exitWithoutSaveButton.addActionListener(e -> frame.dispose());
+        exitWithoutSaveButton.addActionListener(e -> {
+            frame.dispose();
+        });
 
         exportButton.addActionListener(e -> {
 
@@ -93,7 +98,7 @@ public class TextEditor {
 
             JFileChooser fileChooser = new JFileChooser(desktop);
             fileChooser.setDialogTitle("Exportar como .txt");
-            fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Archivos de texto", "txt"));
+            fileChooser.setFileFilter(new FileNameExtensionFilter("Archivos de texto", "txt"));
 
             String defaultFileName = textFile.getName();
             if (!defaultFileName.toLowerCase().endsWith(".txt")) {

@@ -27,7 +27,26 @@ public class HashTable<K, V> {
     }
 
     private int hash(K key) {
-        return Math.abs(key.hashCode()) % DEFAULT_CAPACITY;
+        int hashCode;
+
+        if (key instanceof String) {
+            hashCode = hashString((String) key);
+        } else {
+            hashCode = key.hashCode();
+        }
+
+        return Math.abs(hashCode) % DEFAULT_CAPACITY;
+    }
+
+    private int hashString(String key) {
+        int hash = 0;
+
+        for (int i = 0; i < key.length(); i++) {
+            char c = key.charAt(i);
+            hash = 31 * hash + c;
+        }
+
+        return hash;
     }
 
     public void put(K key, V value) {

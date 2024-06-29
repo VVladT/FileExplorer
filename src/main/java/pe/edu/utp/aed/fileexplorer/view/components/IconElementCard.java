@@ -30,7 +30,8 @@ public class IconElementCard extends ElementCard {
 
     @Override
     public void refresh() {
-        iconLabel.setIcon(IconAdapter.getScaledIcon(60, 60, element.getIcon()));
+        iconLabel.setIcon(IconAdapter.getTranslucentIcon
+                (24, 24, element.getIcon(), isCut? 0.5f : 1.0f));
         nameLabel.setText(element.getName());
     }
 }

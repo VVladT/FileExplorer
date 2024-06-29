@@ -115,10 +115,6 @@ public class VirtualFileSystem {
         throw new PathNotFoundException(path);
     }
 
-    public RootDirectory getRoot() {
-        return root;
-    }
-
     public QuickAccess getQuickAccess() {
         return quickAccess;
     }

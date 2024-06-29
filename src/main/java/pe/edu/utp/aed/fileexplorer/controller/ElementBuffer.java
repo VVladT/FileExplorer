@@ -26,6 +26,10 @@ public class ElementBuffer {
         return null;
     }
 
+    public Element peekElement() {
+        return element;
+    }
+
     private Element recoveryFromCopy() {
         return element.clone();
     }
@@ -43,5 +47,14 @@ public class ElementBuffer {
 
     public boolean isEmpty() {
         return element == null;
+    }
+
+    public Command getCommand() {
+        return command;
+    }
+
+    public static enum Command {
+        COPY,
+        CUT,
     }
 }

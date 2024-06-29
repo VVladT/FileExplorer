@@ -22,6 +22,11 @@ public class TextFile extends Element {
         return content;
     }
 
+    public void updateSize() {
+        setSize(getContent().length());
+        notifyElementUpdated();
+    }
+
     @Override
     public ImageIcon getIcon() {
         return IconAdapter.FILE_ICON;

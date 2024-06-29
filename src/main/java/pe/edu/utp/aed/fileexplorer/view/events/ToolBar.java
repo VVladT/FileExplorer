@@ -3,6 +3,7 @@ package pe.edu.utp.aed.fileexplorer.view.events;
 import pe.edu.utp.aed.fileexplorer.controller.ElementController;
 import pe.edu.utp.aed.fileexplorer.exceptions.PathNotFoundException;
 import pe.edu.utp.aed.fileexplorer.model.RootDirectory;
+import pe.edu.utp.aed.fileexplorer.model.VirtualDrive;
 import pe.edu.utp.aed.fileexplorer.util.IconAdapter;
 
 import javax.swing.*;
@@ -71,7 +72,6 @@ public class ToolBar extends JMenuBar {
     private void initButtons() {
         saveButton = new JButton("Guardar");
         loadButton = new JButton("Cargar");
-        exportButton = new JButton("Exportar");
 
         pinToQuickAccessButton = new JButton("Anclar a acceso rápido");
         renameButton = new JButton("Renombrar");
@@ -82,6 +82,7 @@ public class ToolBar extends JMenuBar {
         newDriveButton = new JButton("Nuevo disco");
         newFolderButton = new JButton("Nueva carpeta");
         newFileButton = new JButton("Nuevo archivo");
+        exportButton = new JButton("Exportar");
 
         iconsButton = new JButton("Iconos");
         detailsButton = new JButton("Detalles");
@@ -101,7 +102,6 @@ public class ToolBar extends JMenuBar {
     private void addButtonActions() {
         saveButton.addActionListener(e -> controller.saveFile());
         loadButton.addActionListener(e -> controller.loadFile());
-        exportButton.addActionListener(e -> controller.exportFile());
 
         pinToQuickAccessButton.addActionListener(e -> controller.pinElementToQuickAccess());
         renameButton.addActionListener(e -> controller.renameElement());
@@ -112,6 +112,7 @@ public class ToolBar extends JMenuBar {
         newDriveButton.addActionListener(e -> controller.createNewDrive());
         newFolderButton.addActionListener(e -> controller.createNewFolder());
         newFileButton.addActionListener(e -> controller.createNewFile());
+        exportButton.addActionListener(e -> controller.exportFile());
 
         iconsButton.addActionListener(e -> controller.switchIconView());
         detailsButton.addActionListener(e -> controller.switchDetailsView());
@@ -128,11 +129,15 @@ public class ToolBar extends JMenuBar {
             copyButton.setEnabled(true);
             cutButton.setEnabled(true);
             deleteButton.setEnabled(true);
+            exportButton
+                    .setEnabled(!(controller.getSelectedElement() instanceof VirtualDrive));
         } else {
             renameButton.setEnabled(false);
             copyButton.setEnabled(false);
             cutButton.setEnabled(false);
             deleteButton.setEnabled(false);
+            exportButton
+                    .setEnabled(false);
         }
 
         if (controller.getCurrentDirectory() != RootDirectory.getInstance()
@@ -156,7 +161,6 @@ public class ToolBar extends JMenuBar {
         JToolBar fileToolbar = new JToolBar();
         fileToolbar.add(saveButton);
         fileToolbar.add(loadButton);
-        fileToolbar.add(exportButton);
         fileToolbar.setFloatable(false);
 
         JToolBar homeToolbar = new JToolBar();
@@ -169,6 +173,7 @@ public class ToolBar extends JMenuBar {
         homeToolbar.add(newDriveButton);
         homeToolbar.add(newFolderButton);
         homeToolbar.add(newFileButton);
+        homeToolbar.add(exportButton);
         homeToolbar.setFloatable(false);
 
         JToolBar viewToolbar = new JToolBar();
@@ -231,6 +236,10 @@ public class ToolBar extends JMenuBar {
         gbc.gridx = 4;
         gbc.weightx = 2;
         lowerPanel.add(searchBar, gbc);
+    }
+
+    public JTextField getAddressBar() {
+        return addressBar;
     }
 
     public JPanel getToolbarPanel() {

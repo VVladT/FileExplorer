@@ -1,13 +1,16 @@
 package pe.edu.utp.aed.fileexplorer.view.components;
 
 import pe.edu.utp.aed.fileexplorer.model.Element;
+import pe.edu.utp.aed.fileexplorer.model.VirtualDrive;
+import pe.edu.utp.aed.fileexplorer.util.FileSize;
 import pe.edu.utp.aed.fileexplorer.util.IconAdapter;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class DetailsElementCard extends ElementCard {
-    private JLabel nameLabel, creationDateLabel, modificationDateLabel, typeLabel, sizeLabel;
+    private JLabel nameLabel, creationDateLabel, modificationDateLabel, typeLabel,
+            sizeLabel, availableSpaceLabel;
 
     public DetailsElementCard(Element element) {
         super(element);
@@ -20,54 +23,86 @@ public class DetailsElementCard extends ElementCard {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(2, 2, 2, 2);
 
-        gbc.gridx = 0;
-        gbc.weightx = 10;
-        nameLabel = new JLabel(IconAdapter.getScaledIcon(24, 24, element.getIcon()));
-        nameLabel.setText(element.getName());
-        nameLabel.setHorizontalAlignment(JLabel.LEFT);
-        nameLabel.setHorizontalTextPosition(JLabel.RIGHT);
-        nameLabel.setPreferredSize(new Dimension(200, 24));
-        add(nameLabel, gbc);
+        if (element instanceof VirtualDrive) {
+            nameLabel = createLabel(200);
+            typeLabel = createLabel(200);
+            sizeLabel = createLabel(100);
+            availableSpaceLabel = createLabel(100);
 
-        gbc.gridx = 1;
-        gbc.weightx = 5;
-        creationDateLabel = new JLabel(element.getCreationDateString());
-        creationDateLabel.setHorizontalAlignment(JLabel.LEFT);
-        creationDateLabel.setPreferredSize(new Dimension(120, 24));
-        add(creationDateLabel, gbc);
+            gbc.gridx = 0;
+            gbc.weightx = 10;
+            add(nameLabel, gbc);
 
-        gbc.gridx = 2;
-        gbc.weightx = 5;
-        modificationDateLabel = new JLabel(element.getModificationDateString());
-        modificationDateLabel.setHorizontalAlignment(JLabel.LEFT);
-        modificationDateLabel.setPreferredSize(new Dimension(120, 24));
-        add(modificationDateLabel, gbc);
+            gbc.gridx = 1;
+            gbc.weightx = 5;
+            add(typeLabel, gbc);
 
-        gbc.gridx = 3;
-        gbc.weightx = 2;
-        typeLabel = new JLabel(element.getType().toString());
-        typeLabel.setHorizontalAlignment(JLabel.LEFT);
-        typeLabel.setPreferredSize(new Dimension(80, 24));
-        add(typeLabel, gbc);
+            gbc.gridx = 2;
+            gbc.weightx = 1;
+            add(sizeLabel, gbc);
 
-        gbc.gridx = 4;
-        gbc.weightx = 1;
-        sizeLabel = new JLabel(String.valueOf(element.getSize()));
-        sizeLabel.setHorizontalAlignment(JLabel.LEFT);
-        sizeLabel.setPreferredSize(new Dimension(80, 24));
-        add(sizeLabel, gbc);
-        revalidate();
-        repaint();
+            gbc.gridx = 3;
+            gbc.weightx = 1;
+            add(availableSpaceLabel, gbc);
+        } else {
+            nameLabel = createLabel(200);
+            creationDateLabel = createLabel(120);
+            modificationDateLabel = createLabel(120);
+            typeLabel = createLabel(80);
+            sizeLabel = createLabel(80);
+
+            gbc.gridx = 0;
+            gbc.weightx = 10;
+            add(nameLabel, gbc);
+
+            gbc.gridx = 1;
+            gbc.weightx = 5;
+            add(creationDateLabel, gbc);
+
+            gbc.gridx = 2;
+            gbc.weightx = 5;
+            add(modificationDateLabel, gbc);
+
+            gbc.gridx = 3;
+            gbc.weightx = 2;
+            add(typeLabel, gbc);
+
+            gbc.gridx = 4;
+            gbc.weightx = 1;
+            add(sizeLabel, gbc);
+        }
+
+        refresh();
+    }
+
+    private JLabel createLabel(int width) {
+        JLabel label = new JLabel();
+        label.setHorizontalAlignment(JLabel.LEFT);
+        label.setHorizontalTextPosition(JLabel.RIGHT);
+        label.setPreferredSize(new Dimension(width, 24));
+        return label;
     }
 
     @Override
     public void refresh() {
-        nameLabel.setText(element.getName());
-        nameLabel.setIcon(IconAdapter.getScaledIcon(24, 24, element.getIcon()));
-        creationDateLabel.setText(element.getCreationDateString());
-        modificationDateLabel.setText(element.getModificationDateString());
-        typeLabel.setText(element.getType().toString());
-        sizeLabel.setText(String.valueOf(element.getSize()));
+        if (element instanceof VirtualDrive drive) {
+            nameLabel.setText(drive.getName());
+            nameLabel.setIcon(IconAdapter.getTranslucentIcon
+                    (24, 24, element.getIcon(), isCut? 0.5f : 1.0f));
+            typeLabel.setText(drive.getType().toString());
+            sizeLabel.setText(FileSize.formatSize(drive.getSize()));
+            availableSpaceLabel.setText(FileSize.formatSize(drive.getAvailableSpace()));
+        } else {
+            nameLabel.setText(element.getName());
+            nameLabel.setIcon(IconAdapter.getTranslucentIcon
+                    (24, 24, element.getIcon(), isCut? 0.5f : 1.0f));
+            creationDateLabel.setText(element.getCreationDateString());
+            modificationDateLabel.setText(element.getModificationDateString());
+            typeLabel.setText(element.getType().toString());
+            sizeLabel.setText(FileSize.formatSize(element.getSize()));
+        }
+        revalidate();
+        repaint();
     }
 
     @Override

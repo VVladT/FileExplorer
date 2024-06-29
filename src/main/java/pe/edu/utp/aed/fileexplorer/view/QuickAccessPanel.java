@@ -25,9 +25,10 @@ public class QuickAccessPanel extends JPanel {
     private QuickAccess quickAccess;
     private DefaultTreeModel directoryTreeModel;
 
-    public QuickAccessPanel(QuickAccess quickAccess, Directory rootDirectory, ElementController controller) {
-        this.quickAccess = quickAccess;
+    public QuickAccessPanel(ElementController controller) {
+        this.quickAccess = controller.getVirtualFileSystem().getQuickAccess();
         this.controller = controller;
+        setPreferredSize(new Dimension(200, 400));
         this.quickAccess.addObserver(new QuickAccessObserver() {
             @Override
             public void elementAdded(Element element) {
@@ -62,6 +63,7 @@ public class QuickAccessPanel extends JPanel {
         add(quickAccessScrollPane, BorderLayout.NORTH);
 
         // Inicializar el árbol de directorios y archivos
+        Directory rootDirectory = RootDirectory.getInstance();
         DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(rootDirectory);
         initializeDirectoryTree(rootNode, rootDirectory);
         JScrollPane treeScrollPane = new JScrollPane(directoryTree);
@@ -100,12 +102,26 @@ public class QuickAccessPanel extends JPanel {
         quickAccessTree.expandRow(0);
     }
 
-    private void initializeDirectoryTree(DefaultMutableTreeNode rootNode, Directory directory) {
+    private void initializeDirectoryTree(DefaultMutableTreeNode rootNode, Directory rootDirectory) {
         directoryTreeModel = new DefaultTreeModel(rootNode);
         directoryTree = new JTree(directoryTreeModel);
         directoryTree.setCellRenderer(new DirectoryTreeCellRenderer());
-        populateDirectoryTree(rootNode, directory);
+        populateDirectoryTree(rootNode, rootDirectory);
         directoryTree.expandRow(0);
+
+        directoryTree.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                TreePath path = directoryTree.getSelectionPath();
+                if (path != null) {
+                    DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) path.getLastPathComponent();
+                    Element selectedElement = (Element) selectedNode.getUserObject();
+                    if (selectedElement != null) {
+                        handleSingleClick(selectedElement);
+                    }
+                }
+            }
+        });
     }
 
     private void populateDirectoryTree(DefaultMutableTreeNode treeNode, Directory directory) {
@@ -125,13 +141,15 @@ public class QuickAccessPanel extends JPanel {
             public void elementAdded(Element element) {
                 DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) directoryTreeModel.getRoot();
                 DefaultMutableTreeNode parentNode = findNodeByElement(rootNode, directory);
-                if (parentNode != null) {
-                    DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(element);
-                    directoryTreeModel.insertNodeInto(newNode, parentNode, parentNode.getChildCount());
-                    if (element instanceof Directory) {
-                        addDirectoryObserver((Directory) element);
-                    }
+                if (parentNode == null) {
+                    parentNode = rootNode; // Si no se encuentra el nodo padre, usa la raíz
                 }
+                DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(element);
+                directoryTreeModel.insertNodeInto(newNode, parentNode, parentNode.getChildCount());
+                if (element instanceof Directory) {
+                    addDirectoryObserver((Directory) element);
+                }
+                directoryTree.expandPath(new TreePath(parentNode.getPath()));
             }
 
             @Override
@@ -146,59 +164,27 @@ public class QuickAccessPanel extends JPanel {
         });
     }
 
+    private DefaultMutableTreeNode findNodeByElement(DefaultMutableTreeNode rootNode, Element element) {
+        if (rootNode.getUserObject().equals(element)) {
+            return rootNode;
+        }
+
+        for (int i = 0; i < rootNode.getChildCount(); i++) {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) rootNode.getChildAt(i);
+            DefaultMutableTreeNode foundNode = findNodeByElement(node, element);
+            if (foundNode != null) {
+                return foundNode;
+            }
+        }
+        return null;
+    }
+
+
+
     private void handleSingleClick(Element selectedElement) {
         controller.openElement(selectedElement);
     }
 
-    private DefaultMutableTreeNode findNodeByElement(DefaultMutableTreeNode rootNode, Element element) {
-        for (int i = 0; i < rootNode.getChildCount(); i++) {
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode) rootNode.getChildAt(i);
-            Element nodeElement = (Element) node.getUserObject();
-            if (nodeElement.equals(element)) {
-                return node;
-            } else if (node.getChildCount() > 0) {
-                DefaultMutableTreeNode foundNode = findNodeByElement(node, element);
-                if (foundNode != null) {
-                    return foundNode;
-                }
-            }
-        }
-        return (DefaultMutableTreeNode) directoryTreeModel.getRoot();
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame();
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-            Directory rootDirectory = RootDirectory.getInstance();
-
-            VirtualDrive drive = new VirtualDrive("Disco", LocalDateTime.now(), FileSize.TB);
-
-            TextFile file1 = new TextFile("File 1", LocalDateTime.now());
-            TextFile file2 = new TextFile("File 2", LocalDateTime.now());
-
-            drive.addChild(file1);
-            drive.addChild(file2);
-
-            rootDirectory.addChild(drive);
-
-            QuickAccess quickAccess = new QuickAccess();
-            quickAccess.addElement(file1);
-
-            QuickAccessPanel quickAccessPanel = new QuickAccessPanel(quickAccess, rootDirectory, null);
-            frame.add(quickAccessPanel);
-            frame.setSize(600, 400);
-            frame.setVisible(true);
-            quickAccess.addElement(file2);
-            FileFolder folder1 = new FileFolder("Folder 1", LocalDateTime.now());
-            FileFolder folder2 = new FileFolder("Folder 2", LocalDateTime.now());
-            drive.addChild(folder1);
-            folder1.addChild(folder2);
-            quickAccess.addElement(folder2);
-            folder2.addChild(new TextFile("oal", LocalDateTime.now()));
-        });
-    }
 }
 
 class QuickAccessTreeCellRenderer extends DefaultTreeCellRenderer {
