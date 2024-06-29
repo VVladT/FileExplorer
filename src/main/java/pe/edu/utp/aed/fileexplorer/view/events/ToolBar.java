@@ -18,6 +18,7 @@ public class ToolBar extends JMenuBar {
 
     private JButton saveButton;
     private JButton loadButton;
+    private JButton exportButton;
 
     private JButton pinToQuickAccessButton;
     private JButton renameButton;
@@ -70,6 +71,7 @@ public class ToolBar extends JMenuBar {
     private void initButtons() {
         saveButton = new JButton("Guardar");
         loadButton = new JButton("Cargar");
+        exportButton = new JButton("Exportar");
 
         pinToQuickAccessButton = new JButton("Anclar a acceso rápido");
         renameButton = new JButton("Renombrar");
@@ -99,6 +101,7 @@ public class ToolBar extends JMenuBar {
     private void addButtonActions() {
         saveButton.addActionListener(e -> controller.saveFile());
         loadButton.addActionListener(e -> controller.loadFile());
+        exportButton.addActionListener(e -> controller.exportFile());
 
         pinToQuickAccessButton.addActionListener(e -> controller.pinElementToQuickAccess());
         renameButton.addActionListener(e -> controller.renameElement());
@@ -153,6 +156,7 @@ public class ToolBar extends JMenuBar {
         JToolBar fileToolbar = new JToolBar();
         fileToolbar.add(saveButton);
         fileToolbar.add(loadButton);
+        fileToolbar.add(exportButton);
         fileToolbar.setFloatable(false);
 
         JToolBar homeToolbar = new JToolBar();

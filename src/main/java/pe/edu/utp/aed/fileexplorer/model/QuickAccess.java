@@ -13,6 +13,10 @@ public class QuickAccess {
         elements = new ArrayList<>();
         observers = new ArrayList<>();
     }
+
+    public QuickAccess(List<Element> elements) {
+        this.elements = elements;
+    }
     public void addElement(Element element) {
         elements.add(element);
         notifyElementAdded(element);

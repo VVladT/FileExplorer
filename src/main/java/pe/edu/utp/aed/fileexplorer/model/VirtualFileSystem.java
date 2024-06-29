@@ -7,9 +7,23 @@ import java.util.List;
 
 public class VirtualFileSystem {
     private final RootDirectory root;
+    private final QuickAccess quickAccess;
 
     public VirtualFileSystem() {
+        this.quickAccess = new QuickAccess();
         root = RootDirectory.getInstance();
+    }
+
+    public VirtualFileSystem(List<VirtualDrive> drives, QuickAccess quickAccess) {
+        root = RootDirectory.getInstance();
+        for (VirtualDrive drive : drives) {
+            root.addChild(drive);
+        }
+        this.quickAccess = quickAccess;
+    }
+
+    public void addElementToQuickAccess(Element element) {
+        quickAccess.addElement(element);
     }
 
     public void addDrive(VirtualDrive drive) {
@@ -81,18 +95,31 @@ public class VirtualFileSystem {
     }
 
     public Element getElementByPath(String path) {
+        return getElementByPath(root, path);
+    }
+
+    public static Element getElementByPath(Directory root, String path) {
         String[] nodes = path.split("/");
-        Directory currentDir = root;
 
         for (int i = 0; i < nodes.length; i++) {
-            Element element = currentDir.getChild(nodes[i]);
+            Element element = root.getChild(nodes[i]);
             if (element == null) throw new PathNotFoundException(path);
             if (element.isDirectory()) {
-                currentDir = (Directory) element;
-            } else if (i == nodes.length - 1) {
+                root = (Directory) element;
+            }
+            if (i == nodes.length - 1 || (i == nodes.length - 2 && nodes[i].isEmpty())) {
                 return element;
             }
         }
+
         throw new PathNotFoundException(path);
+    }
+
+    public RootDirectory getRoot() {
+        return root;
+    }
+
+    public QuickAccess getQuickAccess() {
+        return quickAccess;
     }
 }

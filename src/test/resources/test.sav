@@ -1,0 +1,32 @@
+VFileSystem
+
+#Disks
+//Disk|nombre[String],root[Folder],limitSize[long]|
+//Folder(nombre[String],files[List<Folder>],folders[List<File>],created[LocalDateTime],lastModified[LocalDateTime],path[Path])
+//File(nombre[String],content[ByteBuffer],created[LocalDateTime],lastModified[LocalDateTime],size[long],path[Path])
+Disk|Disco,
+    Folder|Disco,,
+        Folder|Main Folder,,2024-06-29T01:16:33.595701500,2024-06-29T01:16:33.595701500,\Disco\Main Folder
+            File|Texto,SG9sYSBhbWlnb3MgZGUgeW91dHViZQoKCkVuIGVzdGUgdmlkZW8gLi4u,2024-06-29T01:16:33.595701500,2024-06-29T01:16:33.595701500,42,Disco\Main Folder\Texto
+;,
+            Folder|Folder 08,,,2024-06-29T01:16:33.595701500,2024-06-29T01:16:33.595701500,Disco\Main Folder\Folder 08
+;           Folder|Folder 07,,,2024-06-29T01:16:33.595701500,2024-06-29T01:16:33.595701500,Disco\Main Folder\Folder 07
+;           Folder|Folder 06,,,2024-06-29T01:16:33.595701500,2024-06-29T01:16:33.595701500,Disco\Main Folder\Folder 06
+;           Folder|Folder 05,,,2024-06-29T01:16:33.595701500,2024-06-29T01:16:33.595701500,Disco\Main Folder\Folder 05
+;           Folder|Folder 04,,,2024-06-29T01:16:33.595701500,2024-06-29T01:16:33.595701500,Disco\Main Folder\Folder 04
+;           Folder|Folder 03,,,2024-06-29T01:16:33.595701500,2024-06-29T01:16:33.595701500,Disco\Main Folder\Folder 03
+;           Folder|Folder 02,,,2024-06-29T01:16:33.595701500,2024-06-29T01:16:33.595701500,Disco\Main Folder\Folder 02
+;           Folder|Folder10,,,2024-06-29T01:16:33.595701500,2024-06-29T01:16:33.595701500,Disco\Main Folder\Folder10
+;           Folder|Folder 09,,,2024-06-29T01:16:33.595701500,2024-06-29T01:16:33.595701500,Disco\Main Folder\Folder 09
+;
+;,2024-06-29T01:16:33.593702800,2024-06-29T01:16:33.595701500,\root\Disco
+,8796093022208
+
+#QuickAccess
+D/folder1/file3
+D/folder1/file3
+D/folder1/file3
+D/folder1/file3
+D/folder1/file3
+D/folder1/file3
+D/folder1/file3

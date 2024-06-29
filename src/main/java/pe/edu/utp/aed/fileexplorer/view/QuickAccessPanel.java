@@ -1,8 +1,10 @@
 package pe.edu.utp.aed.fileexplorer.view;
 
+import pe.edu.utp.aed.fileexplorer.controller.ElementController;
 import pe.edu.utp.aed.fileexplorer.model.*;
 import pe.edu.utp.aed.fileexplorer.model.observers.DirectoryObserver;
 import pe.edu.utp.aed.fileexplorer.model.observers.QuickAccessObserver;
+import pe.edu.utp.aed.fileexplorer.util.FileSize;
 import pe.edu.utp.aed.fileexplorer.util.IconAdapter;
 
 import javax.swing.*;
@@ -18,12 +20,14 @@ import java.time.LocalDateTime;
 public class QuickAccessPanel extends JPanel {
     private JTree quickAccessTree;
     private JTree directoryTree;
+    private final ElementController controller;
 
     private QuickAccess quickAccess;
     private DefaultTreeModel directoryTreeModel;
 
-    public QuickAccessPanel(QuickAccess quickAccess, Directory rootDirectory) {
+    public QuickAccessPanel(QuickAccess quickAccess, Directory rootDirectory, ElementController controller) {
         this.quickAccess = quickAccess;
+        this.controller = controller;
         this.quickAccess.addObserver(new QuickAccessObserver() {
             @Override
             public void elementAdded(Element element) {
@@ -74,14 +78,12 @@ public class QuickAccessPanel extends JPanel {
         quickAccessTree.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
-                    TreePath path = quickAccessTree.getSelectionPath();
-                    if (path != null) {
-                        DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) path.getLastPathComponent();
-                        Element selectedElement = (Element) selectedNode.getUserObject();
-                        if (selectedElement != null) {
-                            handleQuickAccessDoubleClick(selectedElement);
-                        }
+                TreePath path = quickAccessTree.getSelectionPath();
+                if (path != null) {
+                    DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) path.getLastPathComponent();
+                    Element selectedElement = (Element) selectedNode.getUserObject();
+                    if (selectedElement != null) {
+                        handleSingleClick(selectedElement);
                     }
                 }
             }
@@ -144,9 +146,8 @@ public class QuickAccessPanel extends JPanel {
         });
     }
 
-    private void handleQuickAccessDoubleClick(Element selectedElement) {
-        // Lógica para manejar doble clic en elemento de acceso rápido
-        System.out.println("Acceso rápido a: " + selectedElement.getName());
+    private void handleSingleClick(Element selectedElement) {
+        controller.openElement(selectedElement);
     }
 
     private DefaultMutableTreeNode findNodeByElement(DefaultMutableTreeNode rootNode, Element element) {
@@ -171,23 +172,28 @@ public class QuickAccessPanel extends JPanel {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
             Directory rootDirectory = RootDirectory.getInstance();
+
+            VirtualDrive drive = new VirtualDrive("Disco", LocalDateTime.now(), FileSize.TB);
+
             TextFile file1 = new TextFile("File 1", LocalDateTime.now());
             TextFile file2 = new TextFile("File 2", LocalDateTime.now());
 
-            rootDirectory.addChild(file1);
-            rootDirectory.addChild(file2);
+            drive.addChild(file1);
+            drive.addChild(file2);
+
+            rootDirectory.addChild(drive);
 
             QuickAccess quickAccess = new QuickAccess();
             quickAccess.addElement(file1);
 
-            QuickAccessPanel quickAccessPanel = new QuickAccessPanel(quickAccess, rootDirectory);
+            QuickAccessPanel quickAccessPanel = new QuickAccessPanel(quickAccess, rootDirectory, null);
             frame.add(quickAccessPanel);
             frame.setSize(600, 400);
             frame.setVisible(true);
             quickAccess.addElement(file2);
-            Folder folder1 = new Folder("Folder 1", LocalDateTime.now());
-            Folder folder2 = new Folder("Folder 2", LocalDateTime.now());
-            rootDirectory.addChild(folder1);
+            FileFolder folder1 = new FileFolder("Folder 1", LocalDateTime.now());
+            FileFolder folder2 = new FileFolder("Folder 2", LocalDateTime.now());
+            drive.addChild(folder1);
             folder1.addChild(folder2);
             quickAccess.addElement(folder2);
             folder2.addChild(new TextFile("oal", LocalDateTime.now()));

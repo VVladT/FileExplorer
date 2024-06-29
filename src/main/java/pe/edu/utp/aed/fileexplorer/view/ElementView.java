@@ -14,12 +14,10 @@ import java.util.List;
 public abstract class ElementView extends JPanel implements DirectoryObserver {
     protected Directory directory;
     protected final ElementController controller;
-    private final JLayeredPane layeredPane;
 
-    public ElementView(Directory directory, ElementController controller, JLayeredPane layeredPane) {
+    public ElementView(Directory directory, ElementController controller) {
         this.directory = directory;
         this.controller = controller;
-        this.layeredPane = layeredPane;
     }
 
     public void updateDirectory(Directory newDirectory) {
@@ -63,9 +61,5 @@ public abstract class ElementView extends JPanel implements DirectoryObserver {
 
     public JPanel getContentPanel() {
         return this;
-    }
-
-    public JLayeredPane getLayeredPane() {
-        return layeredPane;
     }
 }

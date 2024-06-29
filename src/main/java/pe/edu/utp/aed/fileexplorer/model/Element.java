@@ -1,6 +1,7 @@
 package pe.edu.utp.aed.fileexplorer.model;
 
 import pe.edu.utp.aed.fileexplorer.model.observers.ElementObserver;
+import xyz.cupscoffee.files.api.Folder;
 
 import javax.swing.*;
 import java.time.LocalDateTime;
@@ -27,11 +28,25 @@ public abstract class Element {
         this.observers = new ArrayList<>();
     }
 
+    public Element(String name, ElementType type, LocalDateTime creationDate, LocalDateTime modificationDate, long size) {
+        this.name = name;
+        this.type = type;
+        this.creationDate = creationDate;
+        this.modificationDate = modificationDate;
+        this.size = size;
+        this.observers = new ArrayList<>();
+    }
+
     public String getPath() {
         StringBuilder path = new StringBuilder();
+        Directory root = RootDirectory.getInstance();
 
-        if (findPath(RootDirectory.getInstance(), path)) {
-            return path.toString();
+        for (Element child : root.getChildren()) {
+            if (child instanceof VirtualDrive drive) {
+                if (findPath(drive, path)) {
+                    return path.toString();
+                }
+            }
         }
 
         return null;
@@ -43,21 +58,32 @@ public abstract class Element {
         }
 
         if (currentDir.getChildren().contains(this)) {
-            path.insert(0, "/" + currentDir.getName() + "/" + this.getName());
+            if (!(currentDir instanceof VirtualDrive)) {
+                path.insert(0, "/" + currentDir.getName() + "/" + this.getName());
+            } else {
+                path.insert(0, currentDir.getName() + "/" + getName());
+            }
+            return true;
+        }
+        if (currentDir.equals(this)) {
+            path.insert(0, getName());
             return true;
         }
 
         for (Element child : currentDir.getChildren()) {
-            if (child instanceof Directory) {
-                Directory childDir = (Directory) child;
+            if (child instanceof Directory childDir) {
                 if (findPath(childDir, path)) {
-                    if (currentDir != RootDirectory.getInstance()) {
+                    if (currentDir instanceof VirtualDrive) {
+                        path.insert(0, currentDir.getName());
+                    } else {
                         path.insert(0, "/" + currentDir.getName());
                     }
+
                     return true;
                 }
             }
         }
+
         return false;
     }
 

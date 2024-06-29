@@ -5,6 +5,7 @@ import pe.edu.utp.aed.fileexplorer.util.IconAdapter;
 
 import javax.swing.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class VirtualDrive extends Directory {
     public static final long DEFAULT_SIZE = 512 * FileSize.GB;
@@ -13,6 +14,11 @@ public class VirtualDrive extends Directory {
     public VirtualDrive(String name, LocalDateTime creationDate, long totalSpace) {
         super(name, ElementType.Drive, creationDate);
         this.totalSpace = totalSpace;
+    }
+
+    public VirtualDrive(String name, LocalDateTime creationDate, LocalDateTime modificationDate, long size, long limitSize, List<Element> children) {
+        super(name, ElementType.Drive, creationDate, modificationDate, size, children);
+        this.totalSpace = limitSize;
     }
 
     public long getTotalSpace() {
@@ -27,11 +33,21 @@ public class VirtualDrive extends Directory {
         return totalSpace - getSize();
     }
 
+    @Override
+    public void increaseSize(long increase) {
+        addUsedSpace(increase);
+    }
+
     public void addUsedSpace(long space) {
         if (getSize() + space > totalSpace) {
             throw new IllegalArgumentException("Not enough space in the disk.");
         }
         setSize(getSize() + space);
+    }
+
+    @Override
+    public void decreaseSize(long decrease) {
+        removeUsedSpace(decrease);
     }
 
     public void removeUsedSpace(long space) {

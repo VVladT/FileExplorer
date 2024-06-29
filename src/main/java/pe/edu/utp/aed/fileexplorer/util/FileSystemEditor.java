@@ -38,7 +38,7 @@ public class FileSystemEditor {
         return new VirtualDrive("Nuevo Disco", LocalDateTime.now(), VirtualDrive.DEFAULT_SIZE);
     }
 
-    public static Folder createNewFolder() {
+    public static FileFolder createNewFolder() {
         JTextField nameField = new JTextField();
         Object[] message = {
                 "Nombre de la carpeta:", nameField
@@ -49,9 +49,9 @@ public class FileSystemEditor {
                 IconAdapter.getScaledIcon(40, 40, IconAdapter.EMPTY_FOLDER_ICON));
         if (option == JOptionPane.OK_OPTION) {
             String name = nameField.getText();
-            return new Folder(name, LocalDateTime.now());
+            return new FileFolder(name, LocalDateTime.now());
         }
-        return new Folder("Nueva carpeta", LocalDateTime.now());
+        return new FileFolder("Nueva carpeta", LocalDateTime.now());
     }
 
     public static TextFile createNewFile() {

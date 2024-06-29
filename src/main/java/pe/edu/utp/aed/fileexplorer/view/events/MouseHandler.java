@@ -210,22 +210,28 @@ public class MouseHandler extends MouseAdapter {
         JMenuItem openItem = new JMenuItem("Abrir");
         JMenuItem renameItem = new JMenuItem("Renombrar");
         JMenuItem pinItem = new JMenuItem("Anclar a acceso rápido");
+        JMenuItem copyPathToClipboardItem = new JMenuItem("Copiar ruta a portapapeles");
         JMenuItem copyItem = new JMenuItem("Copiar");
         JMenuItem cutItem = new JMenuItem("Cortar");
+        JMenuItem exportItem = new JMenuItem("Exportar");
         JMenuItem deleteItem = new JMenuItem("Eliminar");
 
         openItem.addActionListener(e -> elementController.openElement());
         renameItem.addActionListener(e -> elementController.renameElement());
         pinItem.addActionListener(e -> elementController.pinElementToQuickAccess());
+        copyPathToClipboardItem.addActionListener(e -> elementController.copyPathToClipboard());
         copyItem.addActionListener(e -> elementController.copyElement());
         cutItem.addActionListener(e -> elementController.cutElement());
+        exportItem.addActionListener(e -> elementController.exportFile());
         deleteItem.addActionListener(e -> elementController.deleteElement());
 
         elementPopupMenu.add(openItem);
         elementPopupMenu.add(renameItem);
         elementPopupMenu.add(pinItem);
+        elementPopupMenu.add(copyPathToClipboardItem);
         elementPopupMenu.add(copyItem);
         elementPopupMenu.add(cutItem);
+        elementPopupMenu.add(exportItem);
         elementPopupMenu.add(deleteItem);
 
         viewPopupMenu = new JPopupMenu();

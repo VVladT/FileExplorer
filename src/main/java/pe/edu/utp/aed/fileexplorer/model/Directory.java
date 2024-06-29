@@ -19,6 +19,22 @@ public abstract class Directory extends Element implements ElementObserver {
         this.observers = new ArrayList<>();
     }
 
+    public Directory(String name, ElementType type, LocalDateTime creationDate, LocalDateTime modificationDate, long size, List<Element> children) {
+        super(name, type,creationDate, modificationDate, size);
+        this.children = createHashTableOfList(children);
+        this.observers = new ArrayList<>();
+    }
+
+    private HashTable<String, Element> createHashTableOfList(List<Element> children) {
+        HashTable<String, Element> tableChildren = new HashTable<>();
+
+        for (Element child : children) {
+            tableChildren.put(child.getName(), child);
+        }
+
+        return tableChildren;
+    }
+
     public void addChild(Element child) {
         if (children.containsKey(child.getName())) throw new SameNameException(child, this);
         increaseSize(child.getSize());
@@ -57,14 +73,18 @@ public abstract class Directory extends Element implements ElementObserver {
         return children.getValues();
     }
 
-    public boolean containsChild(String childName) {
-        return children.containsKey(childName);
-    }
-
     public List<Element> search(String name) {
         List<Element> result = new ArrayList<>();
         search(this, name, result);
         return result;
+    }
+
+    public boolean isEmpty() {
+        return getChildren().isEmpty();
+    }
+
+    public boolean containsChild(String childName) {
+        return children.containsKey(childName);
     }
 
     private void search(Directory dir, String name, List<Element> list) {
@@ -103,6 +123,6 @@ public abstract class Directory extends Element implements ElementObserver {
 
     @Override
     public void elementUpdated() {
-
+        updateModificationDate();
     }
 }

@@ -1,11 +1,17 @@
 package pe.edu.utp.aed.fileexplorer.controller;
 
 import pe.edu.utp.aed.fileexplorer.model.*;
+import pe.edu.utp.aed.fileexplorer.util.FileExporter;
 import pe.edu.utp.aed.fileexplorer.util.FileSystemEditor;
+import pe.edu.utp.aed.fileexplorer.util.TextEditor;
+import pe.edu.utp.aed.fileexplorer.util.TextExporter;
 import pe.edu.utp.aed.fileexplorer.view.MainView;
 import pe.edu.utp.aed.fileexplorer.view.components.ElementCard;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.util.List;
 
 public class ElementController {
@@ -20,6 +26,14 @@ public class ElementController {
         buffer = new ElementBuffer();
         nav = new DirectoryNavigator();
         vfs = new VirtualFileSystem();
+    }
+
+    public VirtualFileSystem getVirtualFileSystem() {
+        return vfs;
+    }
+
+    public void addElementToQuickAccess(Element element) {
+        vfs.addElementToQuickAccess(element);
     }
 
     public Directory getCurrentDirectory() {
@@ -55,10 +69,12 @@ public class ElementController {
 
     public void deleteElement() {
         try {
-            if (selectedElement.isDirectory()) {
-                if (nav.contains((Directory) selectedElement)) nav.clear();
+            if (selectedElement != null) {
+                if (selectedElement.isDirectory()) {
+                    if (nav.contains((Directory) selectedElement)) nav.clear();
+                }
+                currentDirectory.removeChild(selectedElement);
             }
-            currentDirectory.removeChild(selectedElement);
         } catch (IllegalArgumentException e) {
 
         }
@@ -115,9 +131,42 @@ public class ElementController {
     }
 
     public void saveFile() {
+
     }
 
     public void loadFile() {
+
+    }
+
+    public void exportFile() {
+        exportFile(selectedElement);
+    }
+
+    private void exportFile(Element element) {
+        if (element != null) {
+            if (element.isDirectory()) {
+                exportDirectory((Directory) element);
+            } else {
+                if (element instanceof TextFile) {
+                    exportTextFile((TextFile) element);
+                } else {
+
+                }
+            }
+        }
+    }
+
+    private void exportDirectory(Directory directory) {
+        if (directory instanceof FileFolder) {
+            FileExporter fileExporter = new FileExporter();
+            fileExporter.exportFolder((FileFolder) directory);
+        } else {
+        }
+    }
+
+    private void exportTextFile(TextFile textFile) {
+        TextExporter exporterText = new TextExporter();
+        exporterText.exportTextFile(textFile);
     }
 
     public void pinElementToQuickAccess() {
@@ -129,7 +178,7 @@ public class ElementController {
     }
 
     public void createNewFolder() {
-        Folder newFolder = FileSystemEditor.createNewFolder();
+        FileFolder newFolder = FileSystemEditor.createNewFolder();
         vfs.addElement(currentDirectory, newFolder);
     }
 
@@ -165,9 +214,18 @@ public class ElementController {
                 mainView.setCurrentDirectory((Directory) element);
                 resetSelectedElement();
             } else {
+                if (element instanceof TextFile) {
+                    openTextFileForEditing((TextFile) element);
+                } else {
 
+                }
             }
         }
+    }
+
+    private void openTextFileForEditing(TextFile textFile) {
+        TextEditor editor = new TextEditor();
+        editor.openFile(textFile);
     }
 
     public void searchElements(String nameFile) {
@@ -190,8 +248,8 @@ public class ElementController {
 
     public void back() {
         if (navHasBack()) {
-            Directory nextDirectory = nav.back(currentDirectory);
-            mainView.setCurrentDirectory(nextDirectory);
+            Directory pastDirectory = nav.back(currentDirectory);
+            mainView.setCurrentDirectory(pastDirectory);
         }
     }
 
@@ -204,5 +262,13 @@ public class ElementController {
 
     private void resetSelectedElement() {
         selectedElement = null;
+    }
+
+    public void copyPathToClipboard() {
+        if (selectedElement != null) {
+            String path = selectedElement.getPath();
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            clipboard.setContents(new StringSelection(path), null);
+        }
     }
 }

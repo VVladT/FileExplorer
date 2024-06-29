@@ -22,9 +22,9 @@ public class RootDirectory extends Directory {
 
     @Override
     public void addChild(Element child) {
-        //if (child.getType() != ElementType.Drive) {
-        //    throw new IllegalArgumentException("Root directory only supports drives");
-        //}
+        if (child.getType() != ElementType.Drive) {
+            throw new IllegalArgumentException("Root directory only supports drives");
+        }
 
         super.addChild(child);
     }
@@ -36,6 +36,6 @@ public class RootDirectory extends Directory {
 
     @Override
     public Element clone() {
-        return null;
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
