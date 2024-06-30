@@ -3,6 +3,7 @@ package pe.edu.utp.aed.fileexplorer.util;
 import pe.edu.utp.aed.fileexplorer.model.TextFile;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -18,7 +19,8 @@ public class TextExporter {
 
         JFileChooser fileChooser = new JFileChooser(desktop);
         fileChooser.setDialogTitle("Exportar como .txt");
-        fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Archivos de texto", "txt"));
+        fileChooser.setAcceptAllFileFilterUsed(false);
+        fileChooser.setFileFilter(new FileNameExtensionFilter("Archivos de texto", "txt"));
 
         String defaultFileName = textFile.getName();
         if (!defaultFileName.toLowerCase().endsWith(".txt")) {

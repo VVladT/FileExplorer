@@ -13,7 +13,6 @@ public abstract class ElementCard extends JPanel implements ElementObserver {
 
     public ElementCard(Element element) {
         this.element = element;
-        element.addObserver(this);
         setLayout(new BorderLayout());
         init();
     }

@@ -15,6 +15,7 @@ public class IconElementCard extends ElementCard {
 
     @Override
     protected void init() {
+        element.addObserver(this);
         iconLabel = new JLabel(IconAdapter.getScaledIcon(60, 60, element.getIcon()));
         nameLabel = new JLabel(element.getName());
 
@@ -31,7 +32,7 @@ public class IconElementCard extends ElementCard {
     @Override
     public void refresh() {
         iconLabel.setIcon(IconAdapter.getTranslucentIcon
-                (24, 24, element.getIcon(), isCut? 0.5f : 1.0f));
+                (60, 60, element.getIcon(), isCut? 0.5f : 1.0f));
         nameLabel.setText(element.getName());
     }
 }

@@ -12,20 +12,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class IconView extends ElementView {
-    private final MouseHandler mouseHandler;
     private final GridLayout grid;
     private final List<JPanel> emptyPanels = new ArrayList<>();
     private final int DEFAULT_ROWS = 6;
     private final int DEFAULT_COLUMNS = 7;
 
     public IconView(Directory directory, ElementController controller, JLayeredPane layeredPane) {
-        super(directory, controller);
+        super(directory, controller, layeredPane);
         grid = new GridLayout(DEFAULT_ROWS, DEFAULT_COLUMNS, 10, 10);
-        mouseHandler = new MouseHandler(layeredPane, controller);
         setLayout(grid);
-        addMouseListener(mouseHandler);
         directory.addObserver(this);
         updateDirectory(directory);
+    }
+
+    @Override
+    protected void init() {
+        addMouseListener(mouseHandler);
+        addKeyListener(keyboardHandler);
     }
 
     @Override
@@ -36,6 +39,7 @@ public class IconView extends ElementView {
             addElement(element);
         }
         addEmptyPanels();
+        requestFocus();
         revalidate();
         repaint();
     }

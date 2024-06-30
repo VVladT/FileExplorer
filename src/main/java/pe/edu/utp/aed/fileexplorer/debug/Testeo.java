@@ -55,9 +55,6 @@ public class Testeo {
 
         elementController.startApplication();
 
-        elementController.addElementToQuickAccess(folder6);
-        elementController.addElementToQuickAccess(folder8);
-
         MainView mv = new MainView(elementController);
         mv.setFocusable(true);
         mv.addKeyListener(new KeyboardHandler(elementController));

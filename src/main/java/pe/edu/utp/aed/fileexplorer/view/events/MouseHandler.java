@@ -2,7 +2,9 @@ package pe.edu.utp.aed.fileexplorer.view.events;
 
 import pe.edu.utp.aed.fileexplorer.controller.ElementController;
 import pe.edu.utp.aed.fileexplorer.model.Directory;
+import pe.edu.utp.aed.fileexplorer.model.Element;
 import pe.edu.utp.aed.fileexplorer.model.RootDirectory;
+import pe.edu.utp.aed.fileexplorer.model.VirtualDrive;
 import pe.edu.utp.aed.fileexplorer.view.components.ElementCard;
 import pe.edu.utp.aed.fileexplorer.view.components.TransferElement;
 
@@ -16,21 +18,19 @@ public class MouseHandler extends MouseAdapter {
     private final ElementController elementController;
     private ElementCard selectedElement;
     private TransferElement transferElement;
-    private JPopupMenu elementPopupMenu;
-    private JPopupMenu viewPopupMenu;
-    private JPopupMenu rootPopupMenu;
+    private JPopupMenu popupMenu;
     private boolean dragging = false;
 
     public MouseHandler(JLayeredPane layeredPane, ElementController elementController) {
         this.layeredPane = layeredPane;
         this.elementController = elementController;
-
-        createPopupMenus();
+        popupMenu = new JPopupMenu();
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (SwingUtilities.isRightMouseButton(e)) {
+        if (SwingUtilities.isRightMouseButton(e)
+                && !elementController.isSearchMode()) {
             Component component = e.getComponent();
             if (selectedElement != null) {
                 selectedElement.resetClick();
@@ -39,15 +39,12 @@ public class MouseHandler extends MouseAdapter {
                 selectedElement = ec;
                 selectedElement.click();
                 elementController.setSelectedElement(selectedElement.getElement());
-                elementPopupMenu.show(e.getComponent(), e.getX(), e.getY());
-            } else if (elementController.getCurrentDirectory() != RootDirectory.getInstance()) {
-                elementController.setSelectedElement(null);
-                viewPopupMenu.show(e.getComponent(), e.getX(), e.getY());
-            } else {
-                elementController.setSelectedElement(null);
-                rootPopupMenu.show(e.getComponent(), e.getX(), e.getY());
             }
+            updatePopupMenu(component);
+            popupMenu.show(e.getComponent(), e.getX(), e.getY());
         }
+
+        elementController.refreshFocus();
     }
 
     @Override
@@ -203,12 +200,23 @@ public class MouseHandler extends MouseAdapter {
         elementController.setSelectedElement(null);
     }
 
-    private void createPopupMenus() {
-        elementPopupMenu = new JPopupMenu();
+    private void updatePopupMenu(Component component) {
+        popupMenu.removeAll();
+        if (component instanceof ElementCard ec) {
+            addElementMenuItems(ec.getElement());
+        } else if (elementController.getCurrentDirectory() == RootDirectory.getInstance()) {
+            addRootMenuItems();
+        } else {
+            addDirectoryMenuItems();
+        }
+    }
+
+    private void addElementMenuItems(Element element) {
         JMenuItem openItem = new JMenuItem("Abrir");
         JMenuItem renameItem = new JMenuItem("Renombrar");
         JMenuItem pinItem = new JMenuItem("Anclar a acceso rápido");
-        JMenuItem copyPathToClipboardItem = new JMenuItem("Copiar ruta a portapapeles");
+        JMenuItem unpinItem = new JMenuItem("Desanclar de acceso rápido");
+        JMenuItem copyPathItem = new JMenuItem("Copiar ruta a portapapeles");
         JMenuItem copyItem = new JMenuItem("Copiar");
         JMenuItem cutItem = new JMenuItem("Cortar");
         JMenuItem exportItem = new JMenuItem("Exportar");
@@ -217,22 +225,39 @@ public class MouseHandler extends MouseAdapter {
         openItem.addActionListener(e -> elementController.openElement());
         renameItem.addActionListener(e -> elementController.renameElement());
         pinItem.addActionListener(e -> elementController.pinElementToQuickAccess());
-        copyPathToClipboardItem.addActionListener(e -> elementController.copyPathToClipboard());
+        unpinItem.addActionListener(e -> elementController.unPinElementFromQuickAccess());
+        copyPathItem.addActionListener(e -> elementController.copyPathToClipboard());
         copyItem.addActionListener(e -> elementController.copyElement());
         cutItem.addActionListener(e -> elementController.cutElement());
         exportItem.addActionListener(e -> elementController.exportFile());
         deleteItem.addActionListener(e -> elementController.deleteElement());
 
-        elementPopupMenu.add(openItem);
-        elementPopupMenu.add(renameItem);
-        elementPopupMenu.add(pinItem);
-        elementPopupMenu.add(copyPathToClipboardItem);
-        elementPopupMenu.add(copyItem);
-        elementPopupMenu.add(cutItem);
-        elementPopupMenu.add(exportItem);
-        elementPopupMenu.add(deleteItem);
+        popupMenu.add(openItem);
+        popupMenu.add(renameItem);
+        if (!elementController.getVirtualFileSystem().getQuickAccess().contains(element)) {
+            popupMenu.add(pinItem);
+        } else {
+            popupMenu.add(unpinItem);
+        }
+        popupMenu.add(copyPathItem);
+        if (element != RootDirectory.getInstance() &&
+                !(element instanceof VirtualDrive)) {
+            popupMenu.add(copyItem);
+            popupMenu.add(cutItem);
+            popupMenu.add(deleteItem);
+            popupMenu.add(exportItem);
+        } else {
+            popupMenu.add(deleteItem);
+        }
+    }
 
-        viewPopupMenu = new JPopupMenu();
+    private void addRootMenuItems() {
+        JMenuItem newDriveItem = new JMenuItem("Nuevo disco");
+        newDriveItem.addActionListener(e -> elementController.createNewDrive());
+        popupMenu.add(newDriveItem);
+    }
+
+    private void addDirectoryMenuItems() {
         JMenuItem newFolderItem = new JMenuItem("Nueva carpeta");
         JMenuItem newFileItem = new JMenuItem("Nuevo archivo");
         JMenuItem pasteItem = new JMenuItem("Pegar");
@@ -241,15 +266,8 @@ public class MouseHandler extends MouseAdapter {
         newFileItem.addActionListener(e -> elementController.createNewFile());
         pasteItem.addActionListener(e -> elementController.pasteElement());
 
-        viewPopupMenu.add(newFolderItem);
-        viewPopupMenu.add(newFileItem);
-        viewPopupMenu.add(pasteItem);
-
-        rootPopupMenu = new JPopupMenu();
-        JMenuItem newDriveItem = new JMenuItem("Nuevo disco");
-
-        newDriveItem.addActionListener(e -> elementController.createNewDrive());
-
-        rootPopupMenu.add(newDriveItem);
+        popupMenu.add(newFolderItem);
+        popupMenu.add(newFileItem);
+        popupMenu.add(pasteItem);
     }
 }

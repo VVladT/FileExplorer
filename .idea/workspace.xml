@@ -5,33 +5,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f0a4e3f8-26bc-4b50-94f5-a8314ebdf432" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/exceptions/NotEnoughSpaceException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/util/ElementSorter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/util/VFSBuilder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/components/SearchElementCard.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/FileExplorerApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/FileExplorerApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/controller/Command.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/controller/ElementBuffer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/controller/ElementBuffer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/controller/ElementController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/controller/ElementController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/debug/TestTree.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/debug/Testeo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/model/Directory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/model/Directory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/model/Element.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/model/Element.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/model/TextFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/model/TextFile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/model/VirtualDrive.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/model/VirtualDrive.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/debug/Testeo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/debug/Testeo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/model/QuickAccess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/model/QuickAccess.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/model/VirtualFileSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/model/VirtualFileSystem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/util/FileSize.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/util/FileSize.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/util/IconAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/util/IconAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/util/TextEditor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/util/TextEditor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/util/datastructures/HashTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/util/datastructures/HashTable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/util/TextExporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/util/TextExporter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/DetailsView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/DetailsView.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/ElementView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/ElementView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/IconView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/IconView.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/MainView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/MainView.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/QuickAccessPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/QuickAccessPanel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/components/DetailsElementCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/components/DetailsElementCard.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/components/ElementCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/components/ElementCard.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/components/IconElementCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/components/IconElementCard.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/events/MouseHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/events/MouseHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/events/ToolBar.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/events/ToolBar.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,6 +83,7 @@
       <updated>1719642515079</updated>
       <workItem from="1719642517341" duration="818000" />
       <workItem from="1719672417526" duration="24909000" />
+      <workItem from="1719701016834" duration="11760000" />
     </task>
     <servers />
   </component>

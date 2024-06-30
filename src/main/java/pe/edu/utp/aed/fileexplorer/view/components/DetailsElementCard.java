@@ -18,6 +18,7 @@ public class DetailsElementCard extends ElementCard {
 
     @Override
     protected void init() {
+        element.addObserver(this);
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -90,7 +91,7 @@ public class DetailsElementCard extends ElementCard {
             nameLabel.setIcon(IconAdapter.getTranslucentIcon
                     (24, 24, element.getIcon(), isCut? 0.5f : 1.0f));
             typeLabel.setText(drive.getType().toString());
-            sizeLabel.setText(FileSize.formatSize(drive.getSize()));
+            sizeLabel.setText(FileSize.formatSize(drive.getUsedSpace()));
             availableSpaceLabel.setText(FileSize.formatSize(drive.getAvailableSpace()));
         } else {
             nameLabel.setText(element.getName());

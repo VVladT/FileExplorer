@@ -7,6 +7,7 @@ import pe.edu.utp.aed.fileexplorer.util.FileSystemEditor;
 import pe.edu.utp.aed.fileexplorer.util.TextEditor;
 import pe.edu.utp.aed.fileexplorer.util.TextExporter;
 import pe.edu.utp.aed.fileexplorer.view.MainView;
+import pe.edu.utp.aed.fileexplorer.view.SearchView;
 import pe.edu.utp.aed.fileexplorer.view.components.ElementCard;
 
 import javax.swing.*;
@@ -91,6 +92,13 @@ public class ElementController {
             vfs.addElementToQuickAccess(selectedElement);
         }
     }
+
+    public void unPinElementFromQuickAccess() {
+        if (selectedElement != null) {
+            vfs.removeElementFromQuickAccess(selectedElement);
+        }
+    }
+
     // Buffer Operations
 
     public void copyElement() {
@@ -214,24 +222,18 @@ public class ElementController {
         editor.openFile(textFile);
     }
 
-    // Quick Access Operations
-    public void addElementToQuickAccess(Element element) {
-        vfs.addElementToQuickAccess(element);
-    }
-
     // Search Operations
-
     public void searchElements(String nameFile) {
         List<Element> foundElements = vfs.search(nameFile);
-        // Falta trabajar una vista que rermita visualizar los elementos
+        mainView.setSearchView(foundElements);
     }
+
     public void searchByPath(String path) {
         Element element = vfs.getElementByPath(path);
         openElement(element);
     }
 
     // Clipboard Operations
-
     public void copyPathToClipboard() {
         if (selectedElement != null) {
             String path = selectedElement.getPath();
@@ -239,11 +241,12 @@ public class ElementController {
             clipboard.setContents(new StringSelection(path), null);
         }
     }
-    // View Operations
 
+    // View Operations
     public List<ElementCard> getDirectoriesCard() {
         return mainView.getDirectories();
     }
+
     public void switchIconView() {
         mainView.setIconView();
     }
@@ -253,7 +256,7 @@ public class ElementController {
     }
 
     public void refreshFocus() {
-        mainView.requestFocus();
+        mainView.refreshFocus();
     }
 
     public JPanel getContentPanel() {
@@ -288,6 +291,10 @@ public class ElementController {
 
     public void loadFile() {
 
+    }
+
+    public boolean isSearchMode() {
+        return mainView.getElementView() instanceof SearchView;
     }
 
     private void showErrorMessage(String message) {

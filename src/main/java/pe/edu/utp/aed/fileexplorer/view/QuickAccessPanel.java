@@ -28,7 +28,8 @@ public class QuickAccessPanel extends JPanel {
     public QuickAccessPanel(ElementController controller) {
         this.quickAccess = controller.getVirtualFileSystem().getQuickAccess();
         this.controller = controller;
-        setPreferredSize(new Dimension(200, 400));
+        setLayout(new BorderLayout());
+        setMinimumSize(new Dimension(200, 300));
         this.quickAccess.addObserver(new QuickAccessObserver() {
             @Override
             public void elementAdded(Element element) {
@@ -58,16 +59,14 @@ public class QuickAccessPanel extends JPanel {
         // Inicializar el árbol de acceso rápido
         DefaultMutableTreeNode quickAccessRootNode = new DefaultMutableTreeNode("Acceso Rápido");
         initializeQuickAccessTree(quickAccessRootNode);
-        JScrollPane quickAccessScrollPane = new JScrollPane(quickAccessTree);
-        quickAccessScrollPane.setPreferredSize(new Dimension(200, 150));
-        add(quickAccessScrollPane, BorderLayout.NORTH);
+        quickAccessTree.setPreferredSize(new Dimension(200, 150));
+        add(quickAccessTree, BorderLayout.NORTH);
 
         // Inicializar el árbol de directorios y archivos
         Directory rootDirectory = RootDirectory.getInstance();
         DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(rootDirectory);
         initializeDirectoryTree(rootNode, rootDirectory);
-        JScrollPane treeScrollPane = new JScrollPane(directoryTree);
-        add(treeScrollPane, BorderLayout.CENTER);
+        add(directoryTree, BorderLayout.CENTER);
     }
 
     private void initializeQuickAccessTree(DefaultMutableTreeNode rootNode) {

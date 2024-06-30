@@ -5,6 +5,8 @@ import pe.edu.utp.aed.fileexplorer.model.Directory;
 import pe.edu.utp.aed.fileexplorer.model.Element;
 import pe.edu.utp.aed.fileexplorer.model.observers.DirectoryObserver;
 import pe.edu.utp.aed.fileexplorer.view.components.ElementCard;
+import pe.edu.utp.aed.fileexplorer.view.events.KeyboardHandler;
+import pe.edu.utp.aed.fileexplorer.view.events.MouseHandler;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,12 +16,21 @@ import java.util.List;
 public abstract class ElementView extends JPanel implements DirectoryObserver {
     protected Directory directory;
     protected final ElementController controller;
+    protected final MouseHandler mouseHandler;
+    protected final KeyboardHandler keyboardHandler;
 
-    public ElementView(Directory directory, ElementController controller) {
+    public ElementView(Directory directory, ElementController controller, JLayeredPane layeredPane) {
         this.directory = directory;
         this.controller = controller;
-        setPreferredSize(new Dimension(600, 400));
+        this.mouseHandler = new MouseHandler(layeredPane, controller);
+        this.keyboardHandler = new KeyboardHandler(controller);
+
+        init();
+
+        setMinimumSize(new Dimension(600, 300));
     }
+
+    protected abstract void init();
 
     public void updateDirectory(Directory newDirectory) {
         if (this.directory != null) {

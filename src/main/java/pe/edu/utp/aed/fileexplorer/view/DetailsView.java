@@ -8,17 +8,14 @@ import pe.edu.utp.aed.fileexplorer.model.VirtualDrive;
 import pe.edu.utp.aed.fileexplorer.util.ElementSorter;
 import pe.edu.utp.aed.fileexplorer.view.components.DetailsElementCard;
 import pe.edu.utp.aed.fileexplorer.view.components.ElementCard;
-import pe.edu.utp.aed.fileexplorer.view.events.MouseHandler;
 
 import javax.swing.*;
 import java.awt.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class DetailsView extends ElementView {
-    private final MouseHandler mouseHandler;
     private boolean dirIsRoot;
     private final JPanel headerPanel;
     private final JPanel contentPanel;
@@ -31,11 +28,8 @@ public class DetailsView extends ElementView {
     private boolean sortedAvailableSpaceAsc = false;
 
     public DetailsView(Directory directory, ElementController controller, JLayeredPane layeredPane) {
-        super(directory, controller);
+        super(directory, controller, layeredPane);
         setLayout(new BorderLayout());
-
-        mouseHandler = new MouseHandler(layeredPane, controller);
-        addMouseListener(mouseHandler);
 
         headerPanel = new JPanel(new GridBagLayout());
         contentPanel = new JPanel();
@@ -48,6 +42,12 @@ public class DetailsView extends ElementView {
         updateDirectory(directory);
     }
 
+    @Override
+    protected void init() {
+        addMouseListener(mouseHandler);
+        addKeyListener(keyboardHandler);
+    }
+
     private void addHeader() {
         headerPanel.removeAll();
         GridBagConstraints gbc = new GridBagConstraints();
@@ -55,11 +55,11 @@ public class DetailsView extends ElementView {
         gbc.insets = new Insets(2, 2, 2, 2);
 
         if (!dirIsRoot) {
-            JButton nameHeader = createHeaderButton("Nombre", new Dimension(200, 30));
-            JButton creationDateHeader = createHeaderButton("Fecha de creación", new Dimension(120, 30));
-            JButton modificationDateHeader = createHeaderButton("Fecha de modificación", new Dimension(120, 30));
-            JButton typeHeader = createHeaderButton("Tipo", new Dimension(80, 30));
-            JButton sizeHeader = createHeaderButton("Tamaño", new Dimension(80, 30));
+            JButton nameHeader = createHeaderButton("Nombre", 200);
+            JButton creationDateHeader = createHeaderButton("Fecha de creación", 120);
+            JButton modificationDateHeader = createHeaderButton("Fecha de modificación", 120);
+            JButton typeHeader = createHeaderButton("Tipo", 80);
+            JButton sizeHeader = createHeaderButton("Tamaño", 80);
 
             nameHeader.addActionListener(e -> sortByName());
             creationDateHeader.addActionListener(e -> sortByCreation());
@@ -73,10 +73,10 @@ public class DetailsView extends ElementView {
             addButtonToHeaderPanel(typeHeader, gbc, 3, 2);
             addButtonToHeaderPanel(sizeHeader, gbc, 4, 1);
         } else {
-            JButton nameHeader = createHeaderButton("Nombre", new Dimension(200, 30));
-            JButton typeHeader = createHeaderButton("Tipo", new Dimension(200, 30));
-            JButton totalSpaceHeader = createHeaderButton("Utilizado", new Dimension(100, 30));
-            JButton availableSpaceHeader = createHeaderButton("Disponible", new Dimension(100, 30));
+            JButton nameHeader = createHeaderButton("Nombre", 200);
+            JButton typeHeader = createHeaderButton("Tipo", 200);
+            JButton totalSpaceHeader = createHeaderButton("Utilizado", 100);
+            JButton availableSpaceHeader = createHeaderButton("Disponible", 100);
 
             nameHeader.addActionListener(e -> sortByName());
             typeHeader.addActionListener(e -> sortByType());
@@ -152,9 +152,9 @@ public class DetailsView extends ElementView {
         refreshView(elements);
     }
 
-    private JButton createHeaderButton(String text, Dimension dimension) {
+    private JButton createHeaderButton(String text, int width) {
         JButton button = new JButton(text);
-        button.setPreferredSize(dimension);
+        button.setPreferredSize(new Dimension(width, 30));
 
         return button;
     }
@@ -178,7 +178,7 @@ public class DetailsView extends ElementView {
         }
 
         resetSortStates();
-
+        requestFocus();
         revalidate();
         repaint();
     }

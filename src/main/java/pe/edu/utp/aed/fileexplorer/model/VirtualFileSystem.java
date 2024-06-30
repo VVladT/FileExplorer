@@ -12,35 +12,39 @@ public class VirtualFileSystem {
     public VirtualFileSystem() {
         this.quickAccess = new QuickAccess();
         root = RootDirectory.getInstance();
+        root.addObserver(quickAccess);
     }
 
     public VirtualFileSystem(List<VirtualDrive> drives, QuickAccess quickAccess) {
+        this.quickAccess = quickAccess;
         root = RootDirectory.getInstance();
         for (VirtualDrive drive : drives) {
             root.addChild(drive);
         }
-        this.quickAccess = quickAccess;
+        root.addObserver(quickAccess);
     }
 
     public void addElementToQuickAccess(Element element) {
         quickAccess.addElement(element);
     }
 
+    public void removeElementFromQuickAccess(Element selectedElement) {
+        quickAccess.removeElement(selectedElement);
+    }
+
     public void addDrive(VirtualDrive drive) {
         if (checkParentAndChild(root, drive)) {
             root.addChild(drive);
-        }
-    }
-
-    public void deleteDrive(VirtualDrive drive) {
-        if (checkParentAndChild(root, drive)) {
-            root.removeChild(drive);
+            drive.addObserver(quickAccess);
         }
     }
 
     public void addElement(Directory parent, Element element) {
         if (checkParentAndChild(parent, element)) {
             addFailedOperation(parent, element);
+            if (element instanceof Directory dir) {
+                dir.addObserver(quickAccess);
+            }
         }
     }
 
@@ -59,6 +63,9 @@ public class VirtualFileSystem {
     public void pasteElement(Directory parent, Element element) {
         if (checkParentAndChild(parent, element)) {
             addFailedOperation(parent, element);
+            if (element instanceof Directory dir) {
+                dir.removeObserver(quickAccess);
+            }
         }
     }
 

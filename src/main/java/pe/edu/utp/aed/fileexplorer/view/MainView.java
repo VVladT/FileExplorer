@@ -5,6 +5,7 @@ import pe.edu.utp.aed.fileexplorer.model.Directory;
 import pe.edu.utp.aed.fileexplorer.model.Element;
 import pe.edu.utp.aed.fileexplorer.model.RootDirectory;
 import pe.edu.utp.aed.fileexplorer.view.components.ElementCard;
+import pe.edu.utp.aed.fileexplorer.view.components.IconElementCard;
 import pe.edu.utp.aed.fileexplorer.view.events.ToolBar;
 
 import javax.swing.*;
@@ -74,6 +75,11 @@ public class MainView extends JFrame {
     }
 
     private void updateDirectoryView() {
+        if (!(elementView instanceof IconView) &&
+                !(elementView instanceof DetailsView)) {
+            setDetailsView();
+        }
+
         elementView.updateDirectory(currentDirectory);
         controller.setCurrentDirectory(currentDirectory);
     }
@@ -126,6 +132,10 @@ public class MainView extends JFrame {
         setElementView(new DetailsView(currentDirectory, controller, getLayeredPane()));
     }
 
+    public void setSearchView(List<Element> elements) {
+        setElementView(new SearchView(elements, controller));
+    }
+
     public void clearObservers() {
         for (ElementCard element : getElements()) {
             element.clear();
@@ -136,7 +146,11 @@ public class MainView extends JFrame {
         return elementView.getElementCard(element);
     }
 
-    public void start() {
-        setVisible(true);
+    public void refreshFocus() {
+        elementView.requestFocus();
+    }
+
+    public ElementView getElementView() {
+        return elementView;
     }
 }
