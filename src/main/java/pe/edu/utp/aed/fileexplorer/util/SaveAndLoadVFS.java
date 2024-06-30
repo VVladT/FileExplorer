@@ -19,17 +19,17 @@ public class SaveAndLoadVFS {
         JFileChooser fileChooser = new JFileChooser(desktop);
         fileChooser.setDialogTitle("Guardar como .sav");
         fileChooser.setAcceptAllFileFilterUsed(false);
-        fileChooser.setFileFilter(new FileNameExtensionFilter("Archivos de guardad (.sav)", "sav"));
-
-        String path = fileChooser.getSelectedFile().getAbsolutePath();
-        if (!path.toLowerCase().endsWith(".sav")) {
-            path += ".sav";
-        }
-        fileChooser.setSelectedFile(new File(desktop, path));
+        fileChooser.setFileFilter(new FileNameExtensionFilter("Archivos de guardado (.sav)", "sav"));
 
         int userSelection = fileChooser.showSaveDialog(null);
 
         if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            String path = selectedFile.getAbsolutePath();
+            if (!path.toLowerCase().endsWith(".sav")) {
+                path += ".sav";
+            }
+
             SavStructure sav = SavStructureManager.parseSystemToSavStructure(vfs);
             SavWriter.writeSavToFile(sav, path);
         }

@@ -1,19 +1,11 @@
 package pe.edu.utp.aed.fileexplorer.util;
 
 import com.google.gson.*;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
-import com.google.gson.stream.JsonWriter;
-import xyz.cupscoffee.files.api.Disk;
-import xyz.cupscoffee.files.api.File;
-import xyz.cupscoffee.files.api.Folder;
-import xyz.cupscoffee.files.api.SavStructure;
+import com.google.gson.stream.*;
+import xyz.cupscoffee.files.api.*;
 import xyz.cupscoffee.files.api.driver.SavDriver;
 import xyz.cupscoffee.files.api.exception.InvalidFormatFileException;
-import xyz.cupscoffee.files.api.implementation.SimpleDisk;
-import xyz.cupscoffee.files.api.implementation.SimpleFile;
-import xyz.cupscoffee.files.api.implementation.SimpleFolder;
-import xyz.cupscoffee.files.api.implementation.SimpleSavStructure;
+import xyz.cupscoffee.files.api.implementation.*;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -25,10 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class VFileSystemDriver implements SavDriver {
     @Override
@@ -61,15 +50,14 @@ public class VFileSystemDriver implements SavDriver {
             return gson.fromJson(jsonString, SimpleSavStructure.class);
 
         } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+            throw new InvalidFormatFileException("Error reading file");
         } finally {
             try {
                 if (reader != null) {
                     reader.close();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new InvalidFormatFileException("Error reading file");
             }
         }
     }

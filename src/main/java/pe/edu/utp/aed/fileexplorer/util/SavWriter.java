@@ -33,7 +33,6 @@ public class SavWriter {
             writer.write(HEADER + "\n");
             String json = gson.toJson(savStructure);
             writer.write(json);
-            JOptionPane.showMessageDialog(null, "Sav guardado exitosamente en " + path);
         }
     }
 

@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 public class SavStructureManager {
+
     public static SavStructure parseSystemToSavStructure(VirtualFileSystem vfs) {
         Disk[] disks = new SimpleDisk[vfs.getDrives().size()];
         List<Element> drives = vfs.getDrives();
@@ -25,24 +26,9 @@ public class SavStructureManager {
             VirtualDrive vDrive = (VirtualDrive) drives.get(i);
             disks[i] = parseDisk(vDrive);
         }
-        Map<String,String> quickAccessMetadata = parseQuickAccess(vfs.getQuickAccess());
+        Map<String, String> quickAccessMetadata = parseQuickAccess(vfs.getQuickAccess());
 
-        return new SavStructure() {
-            @Override
-            public String getHeader() {
-                return "VFileSystem";
-            }
-
-            @Override
-            public Disk[] getDisks() {
-                return disks;
-            }
-
-            @Override
-            public Map<String, String> getMetadata() {
-                return quickAccessMetadata;
-            }
-        };
+        return new VFSSavStructure("VFileSystem", disks, quickAccessMetadata);
     }
 
     private static Disk parseDisk(VirtualDrive drive) {
@@ -50,23 +36,23 @@ public class SavStructureManager {
         return new SimpleDisk(drive.getName(), root, drive.getTotalSpace(), new HashMap<>());
     }
 
-    private static Folder parseFolder(Directory fileFolder) {
+    private static Folder parseFolder(Directory directory) {
         List<File> files = new ArrayList<>();
         List<Folder> folders = new ArrayList<>();
-        if (!fileFolder.isEmpty()) {
-            separateFoldersAndFiles(fileFolder, files, folders);
+        if (!directory.isEmpty()) {
+            separateFoldersAndFiles(directory, files, folders);
         }
 
-        return new SimpleFolder(fileFolder.getName(), files,folders, fileFolder.getCreationDate(),
-                fileFolder.getModificationDate(), Paths.get(fileFolder.getPath()), new HashMap<>());
+        return new SimpleFolder(directory.getName(), files, folders, directory.getCreationDate(),
+                directory.getModificationDate(), Paths.get(directory.getPath()), new HashMap<>());
     }
 
     private static File parseFile(TextFile textFile) {
         String str = textFile.getContent().toString();
         ByteBuffer buffer = ByteBuffer.wrap(str.getBytes(Charset.forName("UTF-8")));
 
-        return new SimpleFile(textFile.getName(),buffer,textFile.getCreationDate(),
-                textFile.getModificationDate(), Paths.get(textFile.getPath()),new HashMap<>());
+        return new SimpleFile(textFile.getName(), buffer, textFile.getCreationDate(),
+                textFile.getModificationDate(), Paths.get(textFile.getPath()), new HashMap<>());
     }
 
     private static void separateFoldersAndFiles(Directory directory, List<File> files, List<Folder> folders) {
@@ -97,7 +83,7 @@ public class SavStructureManager {
         return metadata;
     }
 
-    public static VirtualFileSystem parseSavStructureToSystem(SavStructure savStructure) {
+    public static void parseSavStructureToSystem(SavStructure savStructure) {
         RootDirectory.clear();
         RootDirectory root = RootDirectory.getInstance();
 
@@ -107,7 +93,7 @@ public class SavStructureManager {
         }
         QuickAccess quickAccess = parseQuickAccess(savStructure.getMetadata());
 
-        return new VirtualFileSystem(quickAccess);
+        new VirtualFileSystem(quickAccess);
     }
 
     private static VirtualDrive parseDiskToDrive(Disk disk) {
@@ -149,5 +135,32 @@ public class SavStructureManager {
         }
 
         return new QuickAccess(elements);
+    }
+
+    private static class VFSSavStructure implements SavStructure {
+        private String header;
+        private Disk[] disks;
+        private Map<String, String> metadata;
+
+        public VFSSavStructure(String header, Disk[] disks, Map<String, String> metadata) {
+            this.header = header;
+            this.disks = disks;
+            this.metadata = metadata;
+        }
+
+        @Override
+        public String getHeader() {
+            return header;
+        }
+
+        @Override
+        public Disk[] getDisks() {
+            return disks;
+        }
+
+        @Override
+        public Map<String, String> getMetadata() {
+            return metadata;
+        }
     }
 }
