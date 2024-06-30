@@ -1,32 +1,145 @@
 VFileSystem
-
-#Disks
-//Disk|nombre[String],root[Folder],limitSize[long]|
-//Folder(nombre[String],files[List<Folder>],folders[List<File>],created[LocalDateTime],lastModified[LocalDateTime],path[Path])
-//File(nombre[String],content[ByteBuffer],created[LocalDateTime],lastModified[LocalDateTime],size[long],path[Path])
-Disk|Disco,
-    Folder|Disco,,
-        Folder|Main Folder,,2024-06-29T01:16:33.595701500,2024-06-29T01:16:33.595701500,\Disco\Main Folder
-            File|Texto,SG9sYSBhbWlnb3MgZGUgeW91dHViZQoKCkVuIGVzdGUgdmlkZW8gLi4u,2024-06-29T01:16:33.595701500,2024-06-29T01:16:33.595701500,42,Disco\Main Folder\Texto
-;,
-            Folder|Folder 08,,,2024-06-29T01:16:33.595701500,2024-06-29T01:16:33.595701500,Disco\Main Folder\Folder 08
-;           Folder|Folder 07,,,2024-06-29T01:16:33.595701500,2024-06-29T01:16:33.595701500,Disco\Main Folder\Folder 07
-;           Folder|Folder 06,,,2024-06-29T01:16:33.595701500,2024-06-29T01:16:33.595701500,Disco\Main Folder\Folder 06
-;           Folder|Folder 05,,,2024-06-29T01:16:33.595701500,2024-06-29T01:16:33.595701500,Disco\Main Folder\Folder 05
-;           Folder|Folder 04,,,2024-06-29T01:16:33.595701500,2024-06-29T01:16:33.595701500,Disco\Main Folder\Folder 04
-;           Folder|Folder 03,,,2024-06-29T01:16:33.595701500,2024-06-29T01:16:33.595701500,Disco\Main Folder\Folder 03
-;           Folder|Folder 02,,,2024-06-29T01:16:33.595701500,2024-06-29T01:16:33.595701500,Disco\Main Folder\Folder 02
-;           Folder|Folder10,,,2024-06-29T01:16:33.595701500,2024-06-29T01:16:33.595701500,Disco\Main Folder\Folder10
-;           Folder|Folder 09,,,2024-06-29T01:16:33.595701500,2024-06-29T01:16:33.595701500,Disco\Main Folder\Folder 09
-;
-;,2024-06-29T01:16:33.593702800,2024-06-29T01:16:33.595701500,\root\Disco
-,8796093022208
-
-#QuickAccess
-D/folder1/file3
-D/folder1/file3
-D/folder1/file3
-D/folder1/file3
-D/folder1/file3
-D/folder1/file3
-D/folder1/file3
+{
+  "header": "VFileSystem",
+  "disks": [
+    {
+      "name": "Disco",
+      "rootFolder": {
+        "name": "Disco",
+        "files": [],
+        "folders": [
+          {
+            "name": "Main Folder",
+            "files": [
+              {
+                "name": "Texto",
+                "content": "SG9sYSBhbWlnb3MgZGUgeW91dHViZQoKCkVuIGVzdGUgdmlkZW8gLi4u",
+                "created": "2024-06-30T00:25:35.813964400",
+                "lastModified": "2024-06-30T00:25:35.813964400",
+                "size": 42,
+                "path": "Disco\\Main Folder\\Texto",
+                "meta": {}
+              }
+            ],
+            "folders": [
+              {
+                "name": "Folder 01",
+                "files": [],
+                "folders": [],
+                "created": "2000-03-12T04:00",
+                "lastModified": "2000-03-12T04:00",
+                "size": 0,
+                "path": "Disco\\Main Folder\\Folder 01",
+                "metaData": {}
+              },
+              {
+                "name": "Folder 02",
+                "files": [],
+                "folders": [],
+                "created": "2024-06-30T00:25:35.813964400",
+                "lastModified": "2024-06-30T00:25:35.813964400",
+                "size": 0,
+                "path": "Disco\\Main Folder\\Folder 02",
+                "metaData": {}
+              },
+              {
+                "name": "Folder 03",
+                "files": [],
+                "folders": [],
+                "created": "2024-06-30T00:25:35.813964400",
+                "lastModified": "2024-06-30T00:25:35.813964400",
+                "size": 0,
+                "path": "Disco\\Main Folder\\Folder 03",
+                "metaData": {}
+              },
+              {
+                "name": "Folder 04",
+                "files": [],
+                "folders": [],
+                "created": "2024-06-30T00:25:35.813964400",
+                "lastModified": "2024-06-30T00:25:35.813964400",
+                "size": 0,
+                "path": "Disco\\Main Folder\\Folder 04",
+                "metaData": {}
+              },
+              {
+                "name": "Folder 05",
+                "files": [],
+                "folders": [],
+                "created": "2024-06-30T00:25:35.813964400",
+                "lastModified": "2024-06-30T00:25:35.813964400",
+                "size": 0,
+                "path": "Disco\\Main Folder\\Folder 05",
+                "metaData": {}
+              },
+              {
+                "name": "Folder 06",
+                "files": [],
+                "folders": [],
+                "created": "2000-03-12T04:00",
+                "lastModified": "2000-03-12T04:00",
+                "size": 0,
+                "path": "Disco\\Main Folder\\Folder 06",
+                "metaData": {}
+              },
+              {
+                "name": "Folder 07",
+                "files": [],
+                "folders": [],
+                "created": "2024-06-30T00:25:35.813964400",
+                "lastModified": "2024-06-30T00:25:35.813964400",
+                "size": 0,
+                "path": "Disco\\Main Folder\\Folder 07",
+                "metaData": {}
+              },
+              {
+                "name": "Folder 08",
+                "files": [],
+                "folders": [],
+                "created": "2024-06-30T00:25:35.813964400",
+                "lastModified": "2024-06-30T00:25:35.813964400",
+                "size": 0,
+                "path": "Disco\\Main Folder\\Folder 08",
+                "metaData": {}
+              },
+              {
+                "name": "Folder 09",
+                "files": [],
+                "folders": [],
+                "created": "2024-06-30T00:25:35.813964400",
+                "lastModified": "2024-06-30T00:25:35.813964400",
+                "size": 0,
+                "path": "Disco\\Main Folder\\Folder 09",
+                "metaData": {}
+              },
+              {
+                "name": "Folder10",
+                "files": [],
+                "folders": [],
+                "created": "2024-06-30T00:25:35.813964400",
+                "lastModified": "2024-06-30T00:25:35.813964400",
+                "size": 0,
+                "path": "Disco\\Main Folder\\Folder10",
+                "metaData": {}
+              }
+            ],
+            "createdDateTime": "2024-06-30T00:25:35.813964400",
+            "lastModifiedDateTime": "2024-06-30T00:25:35.813964400",
+            "path": "Disco\\Main Folder",
+            "otherMeta": {}
+          }
+        ],
+        "created": "2024-06-30T00:25:35.811963600",
+        "lastModified": "2024-06-30T00:25:35.813964400",
+        "size": 42,
+        "path": "Disco",
+        "metaData": {}
+      },
+      "limitSize": 8796093022208,
+      "metadata": {}
+    }
+  ],
+  "metadata": {
+    "quickAccess": ""
+  }
+}

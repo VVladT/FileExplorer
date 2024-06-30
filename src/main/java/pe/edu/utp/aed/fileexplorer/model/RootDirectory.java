@@ -20,6 +20,10 @@ public class RootDirectory extends Directory {
         return instance;
     }
 
+    public static void clear() {
+        instance.removeChildren();
+    }
+
     @Override
     public void addChild(Element child) {
         if (child.getType() != ElementType.Drive) {

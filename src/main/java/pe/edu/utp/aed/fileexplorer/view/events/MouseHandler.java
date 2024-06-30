@@ -111,15 +111,17 @@ public class MouseHandler extends MouseAdapter {
 
     private void handleLeftDragged(MouseEvent e) {
         if (selectedElement != null) {
-            selectedElement.resetClick();
-            selectedElement.resetHover();
-            Point location = getRelativeLocation(e);
-            if (transferElement == null) {
-                addTransferElementToLayeredPane(location);
+            if (!(selectedElement.getElement() instanceof VirtualDrive)) {
+                selectedElement.resetClick();
+                selectedElement.resetHover();
+                Point location = getRelativeLocation(e);
+                if (transferElement == null) {
+                    addTransferElementToLayeredPane(location);
+                }
+                updateTransferElementLocation(location);
+                hoverDirectories(location);
+                dragging = true;
             }
-            updateTransferElementLocation(location);
-            hoverDirectories(location);
-            dragging = true;
         }
     }
 

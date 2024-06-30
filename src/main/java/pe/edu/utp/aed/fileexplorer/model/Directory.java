@@ -156,4 +156,10 @@ public abstract class Directory extends Element implements ElementObserver {
     public void elementUpdated() {
         updateModificationDate();
     }
+
+    protected void removeChildren() {
+        for (Element child : getChildren()) {
+            removeChild(child);
+        }
+    }
 }

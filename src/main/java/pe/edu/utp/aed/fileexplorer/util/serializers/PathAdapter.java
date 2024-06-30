@@ -1,16 +1,23 @@
 package pe.edu.utp.aed.fileexplorer.util.serializers;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 
-import java.lang.reflect.Type;
+import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
-public class PathSerializer implements JsonSerializer<Path> {
+public class PathAdapter extends TypeAdapter<Path> {
+
     @Override
-    public JsonElement serialize(Path src, Type typeOfSrc, JsonSerializationContext context) {
-        return new JsonPrimitive(src.toString());
+    public void write(JsonWriter out, Path value) throws IOException {
+        out.value(value.toString()); // Escribir el Path como una cadena
+    }
+
+    @Override
+    public Path read(JsonReader in) throws IOException {
+        return Paths.get(in.nextString()); // Leer una cadena y convertirla de vuelta a Path
     }
 }
+

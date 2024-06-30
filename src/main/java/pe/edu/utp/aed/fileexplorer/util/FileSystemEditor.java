@@ -14,28 +14,44 @@ public class FileSystemEditor {
         JTextField sizeField = new JTextField();
         JComboBox<FileSize.Unit> unitComboBox = FileSize.createUnitComboBox();
 
-        Object[] message = {
-                "Nombre del disco:", nameField,
-                "Tamaño máximo:", sizeField, unitComboBox
-        };
+        String name = "Nuevo Disco";
+        boolean processed = false;
 
-        int option = JOptionPane.showConfirmDialog(null, message, "Nuevo disco",
-                JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE,
-                IconAdapter.getScaledIcon(40, 40, IconAdapter.DRIVE_ICON));
-        if (option == JOptionPane.OK_OPTION) {
-            String name = nameField.getText();
-            String sizeText = sizeField.getText();
-            FileSize.Unit unit = (FileSize.Unit) unitComboBox.getSelectedItem();
-            try {
-                double size = Double.parseDouble(sizeText);
-                long sizeInBytes = FileSize.convertToBytes(size, unit);
-                return new VirtualDrive(name, LocalDateTime.now(), sizeInBytes);
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(null, "El tamaño debe ser un número.", "Error", JOptionPane.ERROR_MESSAGE);
+        while (!processed) {
+            Object[] message = {
+                    "Nombre del disco:", nameField,
+                    "Tamaño máximo:", sizeField, unitComboBox
+            };
+
+            int option = JOptionPane.showConfirmDialog(null, message, "Nuevo disco",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE,
+                    IconAdapter.getScaledIcon(40, 40, IconAdapter.DRIVE_ICON));
+
+            if (option == JOptionPane.OK_OPTION) {
+                if (isValidName(nameField.getText())) {
+                    name = nameField.getText();
+                }
+
+                String sizeText = sizeField.getText();
+
+                if (!sizeText.isEmpty()) {
+                    FileSize.Unit unit = (FileSize.Unit) unitComboBox.getSelectedItem();
+                    try {
+                        double size = Double.parseDouble(sizeText);
+                        long sizeInBytes = FileSize.convertToBytes(size, unit);
+                        return new VirtualDrive(name, LocalDateTime.now(), sizeInBytes);
+                    } catch (NumberFormatException e) {
+                        JOptionPane.showMessageDialog(null, "El tamaño debe ser un número.");
+                    }
+                } else {
+                    return new VirtualDrive(name, LocalDateTime.now(), VirtualDrive.DEFAULT_SIZE);
+                }
+            } else {
+                return null;
             }
         }
 
-        return new VirtualDrive("Nuevo Disco", LocalDateTime.now(), VirtualDrive.DEFAULT_SIZE);
+        return new VirtualDrive(name, LocalDateTime.now(), VirtualDrive.DEFAULT_SIZE);
     }
 
     public static FileFolder createNewFolder() {
@@ -44,14 +60,20 @@ public class FileSystemEditor {
                 "Nombre de la carpeta:", nameField
         };
 
+        String name = "Nueva Carpeta";
+
         int option = JOptionPane.showConfirmDialog(null, message, "Nueva carpeta",
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE,
                 IconAdapter.getScaledIcon(40, 40, IconAdapter.EMPTY_FOLDER_ICON));
         if (option == JOptionPane.OK_OPTION) {
-            String name = nameField.getText();
-            return new FileFolder(name, LocalDateTime.now());
+            if (isValidName(nameField.getText())) {
+                name = nameField.getText();
+            }
+        } else {
+            return null;
         }
-        return new FileFolder("Nueva carpeta", LocalDateTime.now());
+
+        return new FileFolder(name, LocalDateTime.now());
     }
 
     public static TextFile createNewFile() {
@@ -60,14 +82,20 @@ public class FileSystemEditor {
                 "Nombre del archivo:", nameField
         };
 
+        String name = "Nuevo Archivo";
+
         int option = JOptionPane.showConfirmDialog(null, message, "Nuevo archivo",
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE,
                 IconAdapter.getScaledIcon(40, 40, IconAdapter.FILE_ICON));
         if (option == JOptionPane.OK_OPTION) {
-            String name = nameField.getText();
-            return new TextFile(name, LocalDateTime.now());
+            if (isValidName(nameField.getText())) {
+                name = nameField.getText();
+            }
+        } else {
+            return null;
         }
-        return new TextFile("Nuevo archivo", LocalDateTime.now());
+
+        return new TextFile(name, LocalDateTime.now());
     }
 
     public static String renameElement(Element element) {
@@ -77,15 +105,19 @@ public class FileSystemEditor {
                 "Nuevo nombre:", nameField
         };
 
-        int option = JOptionPane.showConfirmDialog(null, message, "Renombrar elemento", JOptionPane.OK_CANCEL_OPTION);
+        int option = JOptionPane.showConfirmDialog(null, message, "Renombrar elemento",
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE,
+                IconAdapter.getScaledIcon(40, 40, element.getIcon()));
         if (option == JOptionPane.OK_OPTION) {
-            return nameField.getText();
+            if (isValidName(nameField.getText())) {
+                return nameField.getText();
+            }
         }
 
         return oldName;
     }
 
-    private boolean isValidName(String name) {
+    private static boolean isValidName(String name) {
         return name != null && !name.isEmpty() && VALID_NAME_PATTERN.matcher(name).matches();
     }
 }

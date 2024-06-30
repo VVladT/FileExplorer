@@ -8,17 +8,16 @@ import xyz.cupscoffee.files.api.SavStructure;
 import xyz.cupscoffee.files.api.implementation.SimpleDisk;
 import xyz.cupscoffee.files.api.implementation.SimpleFile;
 import xyz.cupscoffee.files.api.implementation.SimpleFolder;
-import xyz.cupscoffee.files.api.implementation.VFSSavStructure;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
-import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SavFileManager {
+public class SavStructureManager {
     public static SavStructure parseSystemToSavStructure(VirtualFileSystem vfs) {
         Disk[] disks = new SimpleDisk[vfs.getDrives().size()];
         List<Element> drives = vfs.getDrives();
@@ -28,7 +27,22 @@ public class SavFileManager {
         }
         Map<String,String> quickAccessMetadata = parseQuickAccess(vfs.getQuickAccess());
 
-        return new VFSSavStructure("VFileSystem", disks, quickAccessMetadata);
+        return new SavStructure() {
+            @Override
+            public String getHeader() {
+                return "VFileSystem";
+            }
+
+            @Override
+            public Disk[] getDisks() {
+                return disks;
+            }
+
+            @Override
+            public Map<String, String> getMetadata() {
+                return quickAccessMetadata;
+            }
+        };
     }
 
     private static Disk parseDisk(VirtualDrive drive) {
@@ -44,7 +58,7 @@ public class SavFileManager {
         }
 
         return new SimpleFolder(fileFolder.getName(), files,folders, fileFolder.getCreationDate(),
-                fileFolder.getModificationDate(), Path.of(fileFolder.getPath()), new HashMap<>());
+                fileFolder.getModificationDate(), Paths.get(fileFolder.getPath()), new HashMap<>());
     }
 
     private static File parseFile(TextFile textFile) {
@@ -52,7 +66,7 @@ public class SavFileManager {
         ByteBuffer buffer = ByteBuffer.wrap(str.getBytes(Charset.forName("UTF-8")));
 
         return new SimpleFile(textFile.getName(),buffer,textFile.getCreationDate(),
-                textFile.getModificationDate(), Path.of(textFile.getPath()),new HashMap<>());
+                textFile.getModificationDate(), Paths.get(textFile.getPath()),new HashMap<>());
     }
 
     private static void separateFoldersAndFiles(Directory directory, List<File> files, List<Folder> folders) {
@@ -84,14 +98,16 @@ public class SavFileManager {
     }
 
     public static VirtualFileSystem parseSavStructureToSystem(SavStructure savStructure) {
-        List<VirtualDrive> drives = new ArrayList<>();
+        RootDirectory.clear();
+        RootDirectory root = RootDirectory.getInstance();
+
         for (Disk disk : savStructure.getDisks()) {
             VirtualDrive vDrive = parseDiskToDrive(disk);
-            drives.add(vDrive);
+            root.addChild(vDrive);
         }
         QuickAccess quickAccess = parseQuickAccess(savStructure.getMetadata());
 
-        return new VirtualFileSystem(drives, quickAccess);
+        return new VirtualFileSystem(quickAccess);
     }
 
     private static VirtualDrive parseDiskToDrive(Disk disk) {
@@ -127,7 +143,9 @@ public class SavFileManager {
 
         String paths = quickAccessMetadata.get("quickAccess");
         for (String path : paths.split("\n")) {
-            elements.add(VirtualFileSystem.getElementByPath(RootDirectory.getInstance(), path));
+            if (!path.isEmpty()) {
+                elements.add(VirtualFileSystem.getElementByPath(RootDirectory.getInstance(), path));
+            }
         }
 
         return new QuickAccess(elements);

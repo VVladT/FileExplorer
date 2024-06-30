@@ -3,8 +3,8 @@ package pe.edu.utp.aed.fileexplorer.debug;
 import pe.edu.utp.aed.fileexplorer.controller.ElementController;
 import pe.edu.utp.aed.fileexplorer.model.*;
 import pe.edu.utp.aed.fileexplorer.util.FileSize;
-import pe.edu.utp.aed.fileexplorer.util.SavFileManager;
-import pe.edu.utp.aed.fileexplorer.util.SavGenerator;
+import pe.edu.utp.aed.fileexplorer.util.SavStructureManager;
+import pe.edu.utp.aed.fileexplorer.util.SavWriter;
 import pe.edu.utp.aed.fileexplorer.view.MainView;
 import pe.edu.utp.aed.fileexplorer.view.events.KeyboardHandler;
 import xyz.cupscoffee.files.api.SavStructure;
@@ -59,8 +59,9 @@ public class Testeo {
         mv.setFocusable(true);
         mv.addKeyListener(new KeyboardHandler(elementController));
 
-        SavStructure sav = SavFileManager.parseSystemToSavStructure(elementController.getVirtualFileSystem());
-        SavGenerator.writeSavToFile(sav,"");
+        //sav.parseSystemToSavStructure(elementController.getVirtualFileSystem());
+       // SavWriter.writeSavToFile(sav,"C:\\Users\\vvlad\\OneDrive\\Escritorio\\UTP 5\\ALGORITMOS Y ESTRUCTURAS DE DATOS\\FileExplorer\\src\\test\\resources\\test.sav");
+        //SavWriter.readSavFromFile("C:\\Users\\vvlad\\OneDrive\\Escritorio\\UTP 5\\ALGORITMOS Y ESTRUCTURAS DE DATOS\\FileExplorer\\src\\test\\resources\\test.sav");
     }
 
     public static void recursive(Element element, String indentation) {

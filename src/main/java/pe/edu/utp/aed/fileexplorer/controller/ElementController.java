@@ -1,20 +1,22 @@
 package pe.edu.utp.aed.fileexplorer.controller;
 
 import pe.edu.utp.aed.fileexplorer.exceptions.NotEnoughSpaceException;
+import pe.edu.utp.aed.fileexplorer.exceptions.SameNameException;
 import pe.edu.utp.aed.fileexplorer.model.*;
-import pe.edu.utp.aed.fileexplorer.util.FileExporter;
-import pe.edu.utp.aed.fileexplorer.util.FileSystemEditor;
-import pe.edu.utp.aed.fileexplorer.util.TextEditor;
-import pe.edu.utp.aed.fileexplorer.util.TextExporter;
+import pe.edu.utp.aed.fileexplorer.util.*;
 import pe.edu.utp.aed.fileexplorer.view.MainView;
 import pe.edu.utp.aed.fileexplorer.view.SearchView;
 import pe.edu.utp.aed.fileexplorer.view.components.ElementCard;
+import xyz.cupscoffee.files.api.exception.InvalidFormatFileException;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 public class ElementController {
     private final DirectoryNavigator nav;
@@ -83,8 +85,15 @@ public class ElementController {
     }
 
     public void renameElement() {
+        String oldName = selectedElement.getName();
         String newName = FileSystemEditor.renameElement(selectedElement);
-        vfs.renameElement(currentDirectory, selectedElement, newName);
+        try {
+            if (!oldName.equals(newName)) {
+                vfs.renameElement(currentDirectory, selectedElement, newName);
+            }
+        } catch (SameNameException e) {
+            showMessage("Ya existe un archivo con ese nombre: " + newName);
+        }
     }
 
     public void pinElementToQuickAccess() {
@@ -123,7 +132,7 @@ public class ElementController {
             if (element.isDirectory() && buffer.getCommand() == ElementBuffer.Command.CUT) {
                 Directory dir = (Directory) element;
                 if (dir.containsElement(currentDirectory)) {
-                    showErrorMessage("The cut directory contains current directory");
+                    showMessage("The cut directory contains current directory");
                     return;
                 }
             }
@@ -132,7 +141,7 @@ public class ElementController {
                 element = buffer.recoveryElement();
                 vfs.pasteElement(currentDirectory, element);
             } catch (NotEnoughSpaceException e) {
-                showErrorMessage(e.getMessage());
+                showMessage(e.getMessage());
             }
         }
         resetSelectedElement();
@@ -208,6 +217,7 @@ public class ElementController {
     public void openElement(Element element) {
         if (element != null) {
             if (element.isDirectory()) {
+                if (currentDirectory == element) return;
                 nav.addDirectoryToBack(currentDirectory);
                 mainView.setCurrentDirectory((Directory) element);
                 resetSelectedElement();
@@ -286,18 +296,30 @@ public class ElementController {
     }
 
     public void saveFile() {
-
+        try {
+            SaveAndLoadVFS.saveVFS(vfs);
+            showMessage("Archivo guardado correctamente.");
+        } catch (IOException e) {
+            showMessage("Error al guardar el archivo");
+        }
     }
 
     public void loadFile() {
-
+        try {
+            SaveAndLoadVFS.loadVFS();
+            mainView.reload();
+        } catch (FileNotFoundException e) {
+            showMessage("No se encontró el archivo");
+        } catch (InvalidFormatFileException e) {
+            showMessage("Formato de archivo inválido");
+        }
     }
 
     public boolean isSearchMode() {
         return mainView.getElementView() instanceof SearchView;
     }
 
-    private void showErrorMessage(String message) {
+    private void showMessage(String message) {
         JOptionPane.showMessageDialog(mainView, message);
     }
 }

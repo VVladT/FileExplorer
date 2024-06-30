@@ -80,4 +80,10 @@ public class QuickAccess implements DirectoryObserver {
             }
         }
     }
+
+    public void clear() {
+        for (Element element : elements) {
+            removeElement(element);
+        }
+    }
 }

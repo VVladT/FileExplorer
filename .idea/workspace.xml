@@ -5,22 +5,29 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f0a4e3f8-26bc-4b50-94f5-a8314ebdf432" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/components/SearchElementCard.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/FileExplorerApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/FileExplorerApp.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/controller/ElementController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/controller/ElementController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/debug/Testeo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/debug/Testeo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/model/Directory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/model/Directory.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/model/QuickAccess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/model/QuickAccess.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/model/RootDirectory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/model/RootDirectory.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/model/VirtualFileSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/model/VirtualFileSystem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/util/TextExporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/util/TextExporter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/DetailsView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/DetailsView.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/ElementView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/ElementView.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/IconView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/IconView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/util/FileSystemEditor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/util/FileSystemEditor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/util/SavStructureManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/util/SavStructureManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/util/SavWriter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/util/SavWriter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/util/SaveAndLoadVFS.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/util/SaveAndLoadVFS.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/util/serializers/ByteBufferAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/util/serializers/ByteBufferAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/util/serializers/LocalDateTimeSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/util/serializers/LocalDateTimeSerializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/util/serializers/PathAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/util/serializers/PathAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/util/serializers/SimpleDiskSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/util/serializers/SimpleDiskSerializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/util/serializers/SimpleFileSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/util/serializers/SimpleFileSerializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/util/serializers/SimpleFolderSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/util/serializers/SimpleFolderSerializer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/MainView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/MainView.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/QuickAccessPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/QuickAccessPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/components/DetailsElementCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/components/DetailsElementCard.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/components/ElementCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/components/ElementCard.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/components/IconElementCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/components/IconElementCard.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/events/MouseHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pe/edu/utp/aed/fileexplorer/view/events/MouseHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/test.sav" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/test.sav" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,7 +60,10 @@
     "Application.IconView.executor": "Run",
     "Application.QuickAccessPanel.executor": "Run",
     "Application.RootDirectory.executor": "Run",
+    "Application.SavWriter.executor": "Run",
     "Application.TestTree.executor": "Run",
+    "Application.Testeo.executor": "Run",
+    "Application.VFileSystemDriver.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
@@ -83,7 +93,8 @@
       <updated>1719642515079</updated>
       <workItem from="1719642517341" duration="818000" />
       <workItem from="1719672417526" duration="24909000" />
-      <workItem from="1719701016834" duration="11760000" />
+      <workItem from="1719701016834" duration="13191000" />
+      <workItem from="1719714339635" duration="17447000" />
     </task>
     <servers />
   </component>

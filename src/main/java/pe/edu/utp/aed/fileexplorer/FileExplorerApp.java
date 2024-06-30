@@ -10,5 +10,4 @@ public class FileExplorerApp {
         ElementController controller = new ElementController(vfs);
         controller.startApplication();
     }
-
 }

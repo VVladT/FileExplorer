@@ -10,7 +10,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-public class ByteBufferSerializer extends TypeAdapter<ByteBuffer> {
+public class ByteBufferAdapter extends TypeAdapter<ByteBuffer> {
     @Override
     public ByteBuffer read(JsonReader reader) throws IOException {
         if (reader.peek() == JsonToken.NULL) {

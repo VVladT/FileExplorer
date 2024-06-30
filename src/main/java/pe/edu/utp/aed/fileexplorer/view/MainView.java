@@ -5,7 +5,6 @@ import pe.edu.utp.aed.fileexplorer.model.Directory;
 import pe.edu.utp.aed.fileexplorer.model.Element;
 import pe.edu.utp.aed.fileexplorer.model.RootDirectory;
 import pe.edu.utp.aed.fileexplorer.view.components.ElementCard;
-import pe.edu.utp.aed.fileexplorer.view.components.IconElementCard;
 import pe.edu.utp.aed.fileexplorer.view.events.ToolBar;
 
 import javax.swing.*;
@@ -16,7 +15,7 @@ public class MainView extends JFrame {
     private ElementController controller;
     private Directory currentDirectory;
     private JPanel mainPanel;
-    private QuickAccessPanel lateralPanel;
+    private QuickAccessPanel quickAccessPanel;
     private ToolBar toolBar;
     private ElementView elementView;
 
@@ -49,11 +48,11 @@ public class MainView extends JFrame {
         mainPanel = new JPanel(new BorderLayout());
         toolBar = new ToolBar(controller);
         elementView = new DetailsView(currentDirectory, controller, getLayeredPane());
-        lateralPanel = new QuickAccessPanel(controller);
+        quickAccessPanel = new QuickAccessPanel(controller);
     }
 
     private void arrangeComponents() {
-        add(new JScrollPane(lateralPanel), BorderLayout.WEST);
+        add(new JScrollPane(quickAccessPanel), BorderLayout.WEST);
         add(mainPanel);
         setJMenuBar(toolBar);
         add(createUpperPanel(), BorderLayout.NORTH);
@@ -68,7 +67,11 @@ public class MainView extends JFrame {
     }
 
     public void setCurrentDirectory(Directory newDirectory) {
-        setTitle("Explorador de archivos - " + newDirectory.getName());
+        if (newDirectory == RootDirectory.getInstance()) {
+            setTitle("Explorador de archivos - " + newDirectory.getName());
+        } else {
+            setTitle("Explorador de archivos");
+        }
         currentDirectory = newDirectory;
         toolBar.getAddressBar().setText(currentDirectory.getPath());
         updateDirectoryView();
@@ -134,6 +137,24 @@ public class MainView extends JFrame {
 
     public void setSearchView(List<Element> elements) {
         setElementView(new SearchView(elements, controller));
+    }
+
+    public void reload() {
+        getContentPane().removeAll();
+        mainPanel.removeAll();
+        initialize();
+        revalidate();
+        repaint();
+    }
+
+
+    private void refreshAll() {
+        refreshView();
+
+        quickAccessPanel.revalidate();
+        quickAccessPanel.repaint();
+
+        refreshToolbar();
     }
 
     public void clearObservers() {

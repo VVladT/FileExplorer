@@ -4,18 +4,15 @@ import pe.edu.utp.aed.fileexplorer.controller.ElementController;
 import pe.edu.utp.aed.fileexplorer.model.*;
 import pe.edu.utp.aed.fileexplorer.model.observers.DirectoryObserver;
 import pe.edu.utp.aed.fileexplorer.model.observers.QuickAccessObserver;
-import pe.edu.utp.aed.fileexplorer.util.FileSize;
-import pe.edu.utp.aed.fileexplorer.util.IconAdapter;
+import pe.edu.utp.aed.fileexplorer.view.renderers.TreeCellRenderers;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.time.LocalDateTime;
 
 public class QuickAccessPanel extends JPanel {
     private JTree quickAccessTree;
@@ -29,7 +26,14 @@ public class QuickAccessPanel extends JPanel {
         this.quickAccess = controller.getVirtualFileSystem().getQuickAccess();
         this.controller = controller;
         setLayout(new BorderLayout());
-        setMinimumSize(new Dimension(200, 300));
+        setPreferredSize(new Dimension(200, 300));
+
+        initializeQuickAccessObserver();
+        initializeQuickAccessPanel();
+        initializeDirectoryPanel();
+    }
+
+    private void initializeQuickAccessObserver() {
         this.quickAccess.addObserver(new QuickAccessObserver() {
             @Override
             public void elementAdded(Element element) {
@@ -53,74 +57,47 @@ public class QuickAccessPanel extends JPanel {
                 }
             }
         });
-
-        setLayout(new BorderLayout());
-
-        // Inicializar el árbol de acceso rápido
-        DefaultMutableTreeNode quickAccessRootNode = new DefaultMutableTreeNode("Acceso Rápido");
-        initializeQuickAccessTree(quickAccessRootNode);
-        quickAccessTree.setPreferredSize(new Dimension(200, 150));
-        add(quickAccessTree, BorderLayout.NORTH);
-
-        // Inicializar el árbol de directorios y archivos
-        Directory rootDirectory = RootDirectory.getInstance();
-        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(rootDirectory);
-        initializeDirectoryTree(rootNode, rootDirectory);
-        add(directoryTree, BorderLayout.CENTER);
     }
 
-    private void initializeQuickAccessTree(DefaultMutableTreeNode rootNode) {
-        quickAccessTree = new JTree(rootNode);
-        quickAccessTree.setCellRenderer(new QuickAccessTreeCellRenderer());
-        quickAccessTree.expandRow(0);
-
+    private void initializeQuickAccessPanel() {
+        DefaultMutableTreeNode quickAccessRootNode = new DefaultMutableTreeNode("Acceso Rápido");
+        quickAccessTree = new JTree(quickAccessRootNode);
+        quickAccessTree.setCellRenderer(new TreeCellRenderers.QuickAccessTreeCellRenderer());
         populateQuickAccessTree();
+        add(quickAccessTree, BorderLayout.NORTH);
 
         quickAccessTree.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                TreePath path = quickAccessTree.getSelectionPath();
-                if (path != null) {
-                    DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) path.getLastPathComponent();
-                    Element selectedElement = (Element) selectedNode.getUserObject();
-                    if (selectedElement != null) {
-                        handleSingleClick(selectedElement);
-                    }
-                }
+                handleTreeClick(e, quickAccessTree);
+            }
+        });
+    }
+
+    private void initializeDirectoryPanel() {
+        Directory rootDirectory = RootDirectory.getInstance();
+        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(rootDirectory);
+        directoryTreeModel = new DefaultTreeModel(rootNode);
+        directoryTree = new JTree(directoryTreeModel);
+        directoryTree.setCellRenderer(new TreeCellRenderers.DirectoryTreeCellRenderer());
+        populateDirectoryTree(rootNode, rootDirectory);
+        add(directoryTree, BorderLayout.CENTER);
+
+        directoryTree.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                handleTreeClick(e, directoryTree);
             }
         });
     }
 
     private void populateQuickAccessTree() {
+        DefaultMutableTreeNode quickAccessRootNode = (DefaultMutableTreeNode) quickAccessTree.getModel().getRoot();
         for (Element element : quickAccess.getElements()) {
             DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(element);
-            DefaultMutableTreeNode quickAccessRootNode = (DefaultMutableTreeNode) quickAccessTree.getModel().getRoot();
             quickAccessRootNode.add(childNode);
         }
-
         quickAccessTree.expandRow(0);
-    }
-
-    private void initializeDirectoryTree(DefaultMutableTreeNode rootNode, Directory rootDirectory) {
-        directoryTreeModel = new DefaultTreeModel(rootNode);
-        directoryTree = new JTree(directoryTreeModel);
-        directoryTree.setCellRenderer(new DirectoryTreeCellRenderer());
-        populateDirectoryTree(rootNode, rootDirectory);
-        directoryTree.expandRow(0);
-
-        directoryTree.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                TreePath path = directoryTree.getSelectionPath();
-                if (path != null) {
-                    DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) path.getLastPathComponent();
-                    Element selectedElement = (Element) selectedNode.getUserObject();
-                    if (selectedElement != null) {
-                        handleSingleClick(selectedElement);
-                    }
-                }
-            }
-        });
     }
 
     private void populateDirectoryTree(DefaultMutableTreeNode treeNode, Directory directory) {
@@ -132,6 +109,7 @@ public class QuickAccessPanel extends JPanel {
                 populateDirectoryTree(childNode, (Directory) child);
             }
         }
+        directoryTree.expandRow(0);
     }
 
     private void addDirectoryObserver(Directory directory) {
@@ -141,14 +119,14 @@ public class QuickAccessPanel extends JPanel {
                 DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) directoryTreeModel.getRoot();
                 DefaultMutableTreeNode parentNode = findNodeByElement(rootNode, directory);
                 if (parentNode == null) {
-                    parentNode = rootNode; // Si no se encuentra el nodo padre, usa la raíz
+                    parentNode = rootNode;
                 }
                 DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(element);
                 directoryTreeModel.insertNodeInto(newNode, parentNode, parentNode.getChildCount());
                 if (element instanceof Directory) {
                     addDirectoryObserver((Directory) element);
                 }
-                directoryTree.expandPath(new TreePath(parentNode.getPath()));
+                //expandTreeNode(directoryTree, parentNode);
             }
 
             @Override
@@ -163,7 +141,21 @@ public class QuickAccessPanel extends JPanel {
         });
     }
 
-    private DefaultMutableTreeNode findNodeByElement(DefaultMutableTreeNode rootNode, Element element) {
+    private void handleTreeClick(MouseEvent e, JTree tree) {
+        TreePath path = tree.getSelectionPath();
+        if (path != null) {
+            DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) path.getLastPathComponent();
+            Element selectedElement = null;
+            if (selectedNode.getUserObject() instanceof Element) {
+                selectedElement = (Element) selectedNode.getUserObject();
+            }
+            if (selectedElement != null) {
+                controller.openElement(selectedElement);
+            }
+        }
+    }
+
+    private static DefaultMutableTreeNode findNodeByElement(DefaultMutableTreeNode rootNode, Element element) {
         if (rootNode.getUserObject().equals(element)) {
             return rootNode;
         }
@@ -176,49 +168,5 @@ public class QuickAccessPanel extends JPanel {
             }
         }
         return null;
-    }
-
-
-
-    private void handleSingleClick(Element selectedElement) {
-        controller.openElement(selectedElement);
-    }
-
-}
-
-class QuickAccessTreeCellRenderer extends DefaultTreeCellRenderer {
-    @Override
-    public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-        super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-        if (value instanceof DefaultMutableTreeNode) {
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
-            Object userObject = node.getUserObject();
-            if (userObject instanceof Element) {
-                Element element = (Element) userObject;
-                setText(element.getName());
-                setIcon(IconAdapter.getScaledIcon(24, 24, ((Element) userObject).getIcon())); // Reemplaza con tu lógica para obtener el ícono del elemento
-            } else {
-                setText("Acceso Rápido");
-                setIcon(IconAdapter.getScaledIcon(24, 24, IconAdapter.QUICK_ACCESS_ICON));
-            }
-        }
-        return this;
-    }
-}
-
-class DirectoryTreeCellRenderer extends DefaultTreeCellRenderer {
-    @Override
-    public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-        super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-        if (value instanceof DefaultMutableTreeNode) {
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
-            Object userObject = node.getUserObject();
-            if (userObject instanceof Element) {
-                Element element = (Element) userObject;
-                setText(element.getName());
-                setIcon(IconAdapter.getScaledIcon(24, 24, ((Element) userObject).getIcon())); // Reemplaza con tu lógica para obtener el ícono del directorio
-            }
-        }
-        return this;
     }
 }

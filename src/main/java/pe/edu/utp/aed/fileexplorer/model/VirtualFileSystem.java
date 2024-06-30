@@ -15,12 +15,9 @@ public class VirtualFileSystem {
         root.addObserver(quickAccess);
     }
 
-    public VirtualFileSystem(List<VirtualDrive> drives, QuickAccess quickAccess) {
+    public VirtualFileSystem(QuickAccess quickAccess) {
         this.quickAccess = quickAccess;
         root = RootDirectory.getInstance();
-        for (VirtualDrive drive : drives) {
-            root.addChild(drive);
-        }
         root.addObserver(quickAccess);
     }
 
@@ -34,7 +31,7 @@ public class VirtualFileSystem {
 
     public void addDrive(VirtualDrive drive) {
         if (checkParentAndChild(root, drive)) {
-            root.addChild(drive);
+            addFailedOperation(root, drive);
             drive.addObserver(quickAccess);
         }
     }
