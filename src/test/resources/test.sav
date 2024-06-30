@@ -1,9 +1,0 @@
-VFileSystem
-
-#Disks
-//Disk(nombre[String],root[Folder],limitSize[long])
-//Folder(nombre[String],files[List<Folder>],folders[List<File>],created[LocalDateTime],lastModified[LocalDateTime],path[Path])
-//File(nombre[String],content[ByteBuffer],created[LocalDateTime],lastModified[LocalDateTime],size[long],path[Path])
-
-#QuickAccess
-D/folder1/file3
